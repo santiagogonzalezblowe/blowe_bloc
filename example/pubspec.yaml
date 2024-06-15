@@ -1,0 +1,19 @@
+name: example
+description: "A new Flutter project."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.4 <4.0.0"
+
+dependencies:
+  blowe_bloc: ^0.1.0
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
