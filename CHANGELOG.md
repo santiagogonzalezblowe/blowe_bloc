@@ -1,3 +1,7 @@
+## 0.1.2
+
+- Update `README.md` code example
+
 ## 0.1.1
 
 - Added an example demonstrating the usage of `blowe_bloc` in a Flutter application.

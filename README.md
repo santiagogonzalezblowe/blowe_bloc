@@ -27,52 +27,78 @@ Then run \`flutter pub get\` to install the package.
 Here is a basic example of how to use `blowe_bloc` in your Flutter application.
 
 ```dart
-import 'package:flutter/material.dart';
 import 'package:blowe_bloc/blowe_bloc.dart';
+import 'package:flutter/material.dart';
 
 void main() {
-    runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-    @override
-    Widget build(BuildContext context) {
-        return MaterialApp(
-            home: BlocProvider(
-                create: (context) => MyBloweBloc(),
-                child: MyHomePage(),
-            ),
-        );
-    }
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: BlocProvider(
+        create: (context) => MyBloweBloc(),
+        child: const MyHomePage(),
+      ),
+    );
+  }
 }
 
 class MyHomePage extends StatelessWidget {
-    @override
-    Widget build(BuildContext context) {
-        return Scaffold(
-            appBar: AppBar(
-                title: Text('Blowe Bloc Example'),
-            ),
-            body: Center(
-                child: BloweBlocButton<MyBloweBloc, ElevatedButton>(
-                    text: 'Fetch Data',
-                    onPressed: () {
-                        context.read<MyBloweBloc>().add(BloweFetch(BloweNoParams()));
-                    },
-                ),
-            ),
-        );
-    }
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Blowe Bloc Example'),
+      ),
+      floatingActionButton: BloweBlocSelector<MyBloweBloc>(
+        builder: (context, enabled) {
+          return FloatingActionButton(
+            onPressed: enabled
+                ? () {
+                    context.read<MyBloweBloc>().add(
+                          const BloweFetch(BloweNoParams()),
+                        );
+                  }
+                : null,
+            child: const Icon(Icons.add),
+          );
+        },
+      ),
+      body: Center(
+        child: BlocBuilder<MyBloweBloc, BloweState>(
+          builder: (context, state) {
+            if (state is BloweInProgress) {
+              return const CircularProgressIndicator();
+            }
+            if (state is BloweCompleted<String>) {
+              return Text(state.data);
+            }
+            if (state is BloweError) {
+              return const Text('Error: Press the button to load data');
+            }
+            return const Text('Initial: Press the button to load data');
+          },
+        ),
+      ),
+    );
+  }
 }
 
-class MyBloweBloc extends BloweBloc<void, BloweNoParams> {
-    @override
-    Future<void> onFetch(
-        BloweFetch<BloweNoParams> event,
-        Emitter<BloweBlocState> emit,
-    ) async {
-        // Your fetch logic here
-    }
+class MyBloweBloc extends BloweLoadBloc<String, BloweNoParams> {
+  @override
+  Future<String> load(BloweNoParams params) => Future<String>.delayed(
+        const Duration(seconds: 2),
+        () {
+          return 'Blowe Bloc Completed!';
+        },
+      );
 }
 ```
 
