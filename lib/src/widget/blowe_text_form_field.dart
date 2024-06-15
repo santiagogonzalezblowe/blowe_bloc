@@ -16,9 +16,9 @@ typedef BloweTextFormFieldValidator<T> = String? Function(
 /// - [toggleObscureText]: Callback to toggle text obscuring.
 typedef BloweTextFormFieldSuffixIconBuilder = Widget Function(
   BuildContext context,
-  VoidCallback toggleObscureText, {
   bool obscureText,
-});
+  VoidCallback toggleObscureText,
+);
 
 /// Typedef for a label text builder function used by BloweTextFormField.
 ///
@@ -103,8 +103,8 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
         labelText: widget.labelText(context),
         suffixIcon: widget.suffixIcon?.call(
           context,
+          _obscureText,
           toggleObscureText,
-          obscureText: _obscureText,
         ),
       ),
       obscureText: _obscureText,
