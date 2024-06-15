@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 /// - [context]: The BuildContext of the widget.
 /// - [enabled]: Indicates if the widget should be enabled.
 typedef BloweBlocWidgetSelectorBuilder = Widget Function(
-  BuildContext context, {
+  BuildContext context,
   bool enabled,
-});
+);
 
 /// A widget that uses a BlocSelector to determine if the widget
 /// should be enabled.
@@ -30,7 +30,7 @@ class BloweBlocSelector<T extends BloweBloc<dynamic, dynamic>>
   Widget build(BuildContext context) {
     return BlocSelector<T, BloweState, bool>(
       selector: (state) => state is! BloweInProgress,
-      builder: (context, enabled) => builder(context, enabled: enabled),
+      builder: builder,
     );
   }
 }

@@ -32,7 +32,7 @@ class BloweBlocButton<T extends BloweBloc<dynamic, dynamic>,
   ///
   /// - [context]: The BuildContext of the widget.
   /// - [enabled]: Indicates if the button should be enabled.
-  ButtonStyleButton _createButton(BuildContext context, {bool enabled = true}) {
+  ButtonStyleButton _createButton(BuildContext context, bool enabled) {
     switch (B) {
       case ElevatedButton:
         return ElevatedButton(

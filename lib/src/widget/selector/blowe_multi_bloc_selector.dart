@@ -8,9 +8,9 @@ import 'package:flutter/material.dart';
 /// - [context]: The BuildContext of the widget.
 /// - [enabled]: Indicates if the widget should be enabled.
 typedef BloweMultiBlocWidgetSelectorBuilder = Widget Function(
-  BuildContext context, {
+  BuildContext context,
   bool enabled,
-});
+);
 
 /// A widget that monitors multiple BloweBlocs and determines if the widget
 /// should be enabled based on the state of all provided BloweBlocs.
@@ -72,7 +72,7 @@ class BloweMultiBlocSelectorState extends State<BloweMultiBlocSelector> {
       stream: _streamController.stream,
       builder: (context, snapshot) {
         final enabled = snapshot.hasData && snapshot.data!;
-        return widget.builder(context, enabled: enabled);
+        return widget.builder(context, enabled);
       },
     );
   }
