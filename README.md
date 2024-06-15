@@ -58,7 +58,7 @@ class MyHomePage extends StatelessWidget {
                 child: BloweBlocButton<MyBloweBloc, ElevatedButton>(
                     text: 'Fetch Data',
                     onPressed: () {
-                    context.read<MyBloweBloc>().add(BloweFetch(BloweNoParams()));
+                        context.read<MyBloweBloc>().add(BloweFetch(BloweNoParams()));
                     },
                 ),
             ),
