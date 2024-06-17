@@ -1,3 +1,9 @@
+## 0.1.4
+
+- Added the ability to pass dynamic parameters for the `onRefresh` and `Retry` actions in `BlowePaginationListView`.
+- Fixed issue with the last item in the list being inside a column, causing visual inconsistencies.
+- Ensured the list is always scrollable, even when the items do not fill the screen, to allow for `onRefresh` functionality.
+
 ## 0.1.3
 
 - Update `README.md` version
