@@ -54,7 +54,10 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
     this.groupBy,
     this.groupHeaderBuilder,
     super.key,
-  });
+  }) : assert(
+          groupBy == null || groupHeaderBuilder != null,
+          'groupBy and groupHeaderBuilder must be provided together',
+        );
 
   /// The builder function to create list items.
   final BlowePaginationListViewItemBuilder<T> itemBuilder;

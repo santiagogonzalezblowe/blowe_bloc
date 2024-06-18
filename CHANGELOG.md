@@ -1,3 +1,11 @@
+## 0.1.6
+
+- Added the ability to group items in BlowePaginationListView using a custom `groupBy` function.
+- Introduced `BloweGroupHeaderBuilder` to create custom group headers with access to the list of items in each group.
+- Ensured that grouped items are correctly displayed with headers and that the list remains scrollable.
+- Added an assert to ensure `groupBy` and `groupHeaderBuilder` are provided together for clearer error messages.
+- Updated the README.md to reflect the new version number 0.1.6.
+
 ## 0.1.5
 
 - Added the ability to pass a custom filter function to dynamically filter items in BlowePaginationListView.
