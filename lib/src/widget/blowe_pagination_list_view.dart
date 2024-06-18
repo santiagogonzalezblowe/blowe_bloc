@@ -13,6 +13,9 @@ typedef BlowePaginationListViewItemBuilder<T> = Widget Function(
 /// Typedef for a function that provides parameters for the BloweFetch event.
 typedef BloweFetchParamsProvider<P> = P Function();
 
+/// Typedef for a function that filters items in the list.
+typedef BloweItemFilter<T> = bool Function(T item);
+
 /// A widget that displays a paginated list of items using a
 /// BlowePaginationBloc.
 /// It handles loading, error, and completed states of the BlowePaginationBloc.
@@ -23,12 +26,16 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
   /// - [itemBuilder]: The builder function to create list items.
   /// - [paramsProvider]: A function that provides parameters for the
   /// BloweFetch event.
+  /// - [emptyWidget]: A widget to display when the list is empty.
   /// - [padding]: Optional padding for the list view.
+  /// - [filter]: Optional function to filter items in the list.
   const BlowePaginationListView({
     required this.itemBuilder,
     required this.paramsProvider,
-    super.key,
+    this.emptyWidget,
     this.padding,
+    this.filter,
+    super.key,
   });
 
   /// The builder function to create list items.
@@ -37,8 +44,14 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
   /// A function that provides parameters for the BloweFetch event.
   final BloweFetchParamsProvider<P> paramsProvider;
 
+  /// A widget to display when the list is empty.
+  final Widget? emptyWidget;
+
   /// Optional padding for the list view.
   final EdgeInsetsGeometry? padding;
+
+  /// Optional function to filter items in the list.
+  final BloweItemFilter<T>? filter;
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +79,20 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
         }
 
         if (state is BloweCompleted<BlowePaginationModel<T>>) {
+          final items = filter != null
+              ? state.data.items.where(filter!).toList()
+              : state.data.items;
+
+          if (items.isEmpty && emptyWidget != null) {
+            return _EmptyList<B, P>(
+              paramsProvider: paramsProvider,
+              padding: padding,
+              emptyWidget: emptyWidget!,
+            );
+          }
+
           return _BlowePaginationListViewLoaded<B, T, P>(
-            data: state.data,
+            data: BlowePaginationModel(items: items, totalCount: items.length),
             isLoadingMore: state.isLoadingMore,
             itemBuilder: itemBuilder,
             padding: padding,
@@ -171,6 +196,39 @@ class __BlowePaginationListViewStateLoaded<
           final item = widget.data.items[index];
           return widget.itemBuilder(context, item);
         },
+      ),
+    );
+  }
+}
+
+class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
+    extends StatelessWidget {
+  const _EmptyList({
+    required this.paramsProvider,
+    required this.emptyWidget,
+    this.padding,
+    super.key,
+  });
+
+  /// Optional padding for the list view.
+  final EdgeInsetsGeometry? padding;
+
+  /// A function that provides parameters for the BloweFetch event.
+  final BloweFetchParamsProvider<P> paramsProvider;
+
+  /// A widget to display when the list is empty.
+  final Widget emptyWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<B>().add(BloweFetch(paramsProvider()));
+      },
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: padding,
+        children: [emptyWidget],
       ),
     );
   }

@@ -1,3 +1,14 @@
+## 0.1.5
+
+- Added the ability to pass a custom filter function to dynamically filter items in BlowePaginationListView.
+- Updated the constructor to accept an optional filter parameter.
+- Applied the filter to the items before displaying them.
+- Ensured that the filtering works seamlessly with the existing onRefresh functionality.
+- Made BlowePaginationModel non-abstract to allow instantiation.
+- Added the ability to pass an `emptyWidget` to display when the list is empty.
+- Wrapped the `emptyWidget` in a `RefreshIndicator` to allow onRefresh functionality even when the list is empty.
+- Updated documentation and examples to reflect these changes.
+
 ## 0.1.4
 
 - Added the ability to pass dynamic parameters for the `onRefresh` and `Retry` actions in `BlowePaginationListView`.
