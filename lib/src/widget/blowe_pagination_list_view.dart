@@ -16,11 +16,25 @@ typedef BloweFetchParamsProvider<P> = P Function();
 /// Typedef for a function that filters items in the list.
 typedef BloweItemFilter<T> = bool Function(T item);
 
+/// Typedef for a function that groups items in the list.
+typedef BloweItemGrouper<T, G> = G Function(T item);
+
+/// Typedef for a widget builder function used to build the group header.
+///
+/// - [context]: The BuildContext of the widget.
+/// - [group]: The group identifier.
+/// - [items]: The list of items in the group.
+typedef BloweGroupHeaderBuilder<T, G> = Widget Function(
+  BuildContext context,
+  G group,
+  List<T> items,
+);
+
 /// A widget that displays a paginated list of items using a
 /// BlowePaginationBloc.
 /// It handles loading, error, and completed states of the BlowePaginationBloc.
-class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
-    extends StatelessWidget {
+class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
+    G> extends StatelessWidget {
   /// Creates an instance of BlowePaginationListView.
   ///
   /// - [itemBuilder]: The builder function to create list items.
@@ -29,12 +43,16 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
   /// - [emptyWidget]: A widget to display when the list is empty.
   /// - [padding]: Optional padding for the list view.
   /// - [filter]: Optional function to filter items in the list.
+  /// - [groupBy]: Optional function to group items in the list.
+  /// - [groupHeaderBuilder]: Optional builder function to create group headers.
   const BlowePaginationListView({
     required this.itemBuilder,
     required this.paramsProvider,
     this.emptyWidget,
     this.padding,
     this.filter,
+    this.groupBy,
+    this.groupHeaderBuilder,
     super.key,
   });
 
@@ -52,6 +70,12 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
 
   /// Optional function to filter items in the list.
   final BloweItemFilter<T>? filter;
+
+  /// Optional function to group items in the list.
+  final BloweItemGrouper<T, G>? groupBy;
+
+  /// Optional builder function to create group headers.
+  final BloweGroupHeaderBuilder<T, G>? groupHeaderBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -91,12 +115,14 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
             );
           }
 
-          return _BlowePaginationListViewLoaded<B, T, P>(
+          return _BlowePaginationListViewLoaded<B, T, P, G>(
             data: BlowePaginationModel(items: items, totalCount: items.length),
             isLoadingMore: state.isLoadingMore,
             itemBuilder: itemBuilder,
             padding: padding,
             paramsProvider: paramsProvider,
+            groupBy: groupBy,
+            groupHeaderBuilder: groupHeaderBuilder,
           );
         }
 
@@ -107,7 +133,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
 }
 
 class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
-    T, P> extends StatefulWidget {
+    T, P, G> extends StatefulWidget {
   /// Creates an instance of _BlowePaginationListViewLoaded.
   ///
   /// - [data]: The data for the list view.
@@ -116,6 +142,8 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
   /// - [padding]: Optional padding for the list view.
   /// - [paramsProvider]: A function that provides parameters for the
   /// BloweFetch event.
+  /// - [groupBy]: Optional function to group items in the list.
+  /// - [groupHeaderBuilder]: Optional builder function to create group headers.
   const _BlowePaginationListViewLoaded({
     required this.data,
     required this.isLoadingMore,
@@ -123,6 +151,8 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
     required this.paramsProvider,
     super.key,
     this.padding,
+    this.groupBy,
+    this.groupHeaderBuilder,
   });
 
   /// The data for the list view.
@@ -140,15 +170,22 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
   /// A function that provides parameters for the BloweFetch event.
   final BloweFetchParamsProvider<P> paramsProvider;
 
+  /// Optional function to group items in the list.
+  final BloweItemGrouper<T, G>? groupBy;
+
+  /// Optional builder function to create group headers.
+  final BloweGroupHeaderBuilder<T, G>? groupHeaderBuilder;
+
   @override
-  State<_BlowePaginationListViewLoaded<B, T, P>> createState() =>
-      __BlowePaginationListViewStateLoaded<B, T, P>();
+  State<_BlowePaginationListViewLoaded<B, T, P, G>> createState() =>
+      __BlowePaginationListViewStateLoaded<B, T, P, G>();
 }
 
 class __BlowePaginationListViewStateLoaded<
     B extends BlowePaginationBloc<dynamic, P>,
     T,
-    P> extends State<_BlowePaginationListViewLoaded<B, T, P>> {
+    P,
+    G> extends State<_BlowePaginationListViewLoaded<B, T, P, G>> {
   late ScrollController _scrollController;
 
   @override
@@ -188,16 +225,71 @@ class __BlowePaginationListViewStateLoaded<
         physics: const AlwaysScrollableScrollPhysics(),
         padding: widget.padding,
         controller: _scrollController,
-        itemCount: widget.data.items.length + (widget.isLoadingMore ? 1 : 0),
+        itemCount: _getItemCount(),
         itemBuilder: (context, index) {
-          if (index == widget.data.items.length) {
+          if (index == _getItemCount() - 1 && widget.isLoadingMore) {
             return const LinearProgressIndicator(minHeight: 2);
           }
-          final item = widget.data.items[index];
-          return widget.itemBuilder(context, item);
+          final item = _getItemAt(index);
+          if (item is _GroupHeader) {
+            return item.header;
+          }
+          return widget.itemBuilder(context, item as T);
         },
       ),
     );
+  }
+
+  int _getItemCount() {
+    if (widget.groupBy == null) {
+      return widget.data.items.length + (widget.isLoadingMore ? 1 : 0);
+    }
+    final groupedItems = _groupItems();
+    var count = groupedItems.keys.length;
+    groupedItems.forEach((key, value) {
+      count += value.length;
+    });
+    if (widget.isLoadingMore) {
+      count++;
+    }
+    return count;
+  }
+
+  dynamic _getItemAt(int index) {
+    if (widget.groupBy == null) {
+      return widget.data.items[index];
+    }
+    final groupedItems = _groupItems();
+    var currentIndex = 0;
+    for (final group in groupedItems.entries) {
+      if (currentIndex == index) {
+        return _GroupHeader(
+          header: widget.groupHeaderBuilder!(
+            context,
+            group.key,
+            group.value,
+          ),
+        );
+      }
+      currentIndex++;
+      if (index < currentIndex + group.value.length) {
+        return group.value[index - currentIndex];
+      }
+      currentIndex += group.value.length;
+    }
+    return null;
+  }
+
+  Map<G, List<T>> _groupItems() {
+    final groupedItems = <G, List<T>>{};
+    for (final item in widget.data.items) {
+      final group = widget.groupBy!(item);
+      if (!groupedItems.containsKey(group)) {
+        groupedItems[group] = [];
+      }
+      groupedItems[group]!.add(item);
+    }
+    return groupedItems;
   }
 }
 
@@ -232,4 +324,10 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
       ),
     );
   }
+}
+
+class _GroupHeader {
+  const _GroupHeader({required this.header});
+
+  final Widget header;
 }
