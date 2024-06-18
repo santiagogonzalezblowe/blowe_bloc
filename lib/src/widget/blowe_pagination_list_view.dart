@@ -13,6 +13,9 @@ typedef BlowePaginationListViewItemBuilder<T> = Widget Function(
 /// Typedef for a function that provides parameters for the BloweFetch event.
 typedef BloweFetchParamsProvider<P> = P Function();
 
+/// Typedef for a function that filters items in the list.
+typedef BloweItemFilter<T> = bool Function(T item);
+
 /// A widget that displays a paginated list of items using a
 /// BlowePaginationBloc.
 /// It handles loading, error, and completed states of the BlowePaginationBloc.
@@ -25,11 +28,13 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
   /// BloweFetch event.
   /// - [emptyWidget]: A widget to display when the list is empty.
   /// - [padding]: Optional padding for the list view.
+  /// - [filter]: Optional function to filter items in the list.
   const BlowePaginationListView({
     required this.itemBuilder,
     required this.paramsProvider,
     this.emptyWidget,
     this.padding,
+    this.filter,
     super.key,
   });
 
@@ -44,6 +49,9 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
 
   /// Optional padding for the list view.
   final EdgeInsetsGeometry? padding;
+
+  /// Optional function to filter items in the list.
+  final BloweItemFilter<T>? filter;
 
   @override
   Widget build(BuildContext context) {
@@ -71,15 +79,20 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
         }
 
         if (state is BloweCompleted<BlowePaginationModel<T>>) {
-          if (state.data.items.isEmpty && emptyWidget != null) {
+          final items = filter != null
+              ? state.data.items.where(filter!).toList()
+              : state.data.items;
+
+          if (items.isEmpty && emptyWidget != null) {
             return _EmptyList<B, P>(
               paramsProvider: paramsProvider,
               padding: padding,
               emptyWidget: emptyWidget!,
             );
           }
+
           return _BlowePaginationListViewLoaded<B, T, P>(
-            data: state.data,
+            data: BlowePaginationModel(items: items, totalCount: items.length),
             isLoadingMore: state.isLoadingMore,
             itemBuilder: itemBuilder,
             padding: padding,

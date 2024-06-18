@@ -1,6 +1,6 @@
-/// Abstract class representing a pagination model.
+/// Class representing a pagination model.
 /// This class is used to handle paginated data.
-abstract class BlowePaginationModel<T> {
+class BlowePaginationModel<T> {
   /// Creates an instance of BlowePaginationModel.
   ///
   /// - [items]: The list of items of type T.
