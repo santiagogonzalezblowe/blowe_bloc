@@ -23,12 +23,14 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
   /// - [itemBuilder]: The builder function to create list items.
   /// - [paramsProvider]: A function that provides parameters for the
   /// BloweFetch event.
+  /// - [emptyWidget]: A widget to display when the list is empty.
   /// - [padding]: Optional padding for the list view.
   const BlowePaginationListView({
     required this.itemBuilder,
     required this.paramsProvider,
-    super.key,
+    this.emptyWidget,
     this.padding,
+    super.key,
   });
 
   /// The builder function to create list items.
@@ -36,6 +38,9 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
 
   /// A function that provides parameters for the BloweFetch event.
   final BloweFetchParamsProvider<P> paramsProvider;
+
+  /// A widget to display when the list is empty.
+  final Widget? emptyWidget;
 
   /// Optional padding for the list view.
   final EdgeInsetsGeometry? padding;
@@ -66,6 +71,13 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
         }
 
         if (state is BloweCompleted<BlowePaginationModel<T>>) {
+          if (state.data.items.isEmpty && emptyWidget != null) {
+            return _EmptyList<B, P>(
+              paramsProvider: paramsProvider,
+              padding: padding,
+              emptyWidget: emptyWidget,
+            );
+          }
           return _BlowePaginationListViewLoaded<B, T, P>(
             data: state.data,
             isLoadingMore: state.isLoadingMore,
@@ -171,6 +183,39 @@ class __BlowePaginationListViewStateLoaded<
           final item = widget.data.items[index];
           return widget.itemBuilder(context, item);
         },
+      ),
+    );
+  }
+}
+
+class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
+    extends StatelessWidget {
+  const _EmptyList({
+    required this.paramsProvider,
+    this.padding,
+    super.key,
+    this.emptyWidget,
+  });
+
+  /// Optional padding for the list view.
+  final EdgeInsetsGeometry? padding;
+
+  /// A function that provides parameters for the BloweFetch event.
+  final BloweFetchParamsProvider<P> paramsProvider;
+
+  /// A widget to display when the list is empty.
+  final Widget? emptyWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () async {
+        context.read<B>().add(BloweFetch(paramsProvider()));
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: padding,
+        child: Center(child: emptyWidget),
       ),
     );
   }
