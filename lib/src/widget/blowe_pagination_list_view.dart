@@ -75,7 +75,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P>
             return _EmptyList<B, P>(
               paramsProvider: paramsProvider,
               padding: padding,
-              emptyWidget: emptyWidget,
+              emptyWidget: emptyWidget!,
             );
           }
           return _BlowePaginationListViewLoaded<B, T, P>(
@@ -192,9 +192,9 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
     extends StatelessWidget {
   const _EmptyList({
     required this.paramsProvider,
+    required this.emptyWidget,
     this.padding,
     super.key,
-    this.emptyWidget,
   });
 
   /// Optional padding for the list view.
@@ -204,7 +204,7 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
   final BloweFetchParamsProvider<P> paramsProvider;
 
   /// A widget to display when the list is empty.
-  final Widget? emptyWidget;
+  final Widget emptyWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -212,10 +212,10 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
       onRefresh: () async {
         context.read<B>().add(BloweFetch(paramsProvider()));
       },
-      child: SingleChildScrollView(
+      child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: padding,
-        child: Center(child: emptyWidget),
+        children: [emptyWidget],
       ),
     );
   }
