@@ -32,6 +32,7 @@ typedef BloweTextFormFieldLabelTextBuilder = String Function(
 abstract class BloweTextFormField extends StatefulWidget {
   /// Creates an instance of BloweTextFormField.
   ///
+  /// - [labelText]: Builder function for the label text.
   /// - [obscureText]: Indicates if the text should be obscured
   /// (default is false).
   /// - [controller]: Optional TextEditingController.
@@ -41,7 +42,8 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// - [keyboardType]: Optional keyboard type.
   /// - [textInputAction]: Optional text input action.
   /// - [suffixIcon]: Optional builder function for suffix icon.
-  /// - [labelText]: Builder function for the label text.
+  /// - [initialValue]: The initial value of the text field.
+  /// - [readOnly]: Indicates if the text field is read-only (default is false).
   const BloweTextFormField({
     required this.labelText,
     super.key,
@@ -53,6 +55,8 @@ abstract class BloweTextFormField extends StatefulWidget {
     this.keyboardType,
     this.textInputAction,
     this.suffixIcon,
+    this.initialValue,
+    this.readOnly = false,
   });
 
   /// Indicates if the text should be obscured.
@@ -81,6 +85,12 @@ abstract class BloweTextFormField extends StatefulWidget {
 
   /// Builder function for the label text.
   final BloweTextFormFieldLabelTextBuilder labelText;
+
+  /// The initial value of the text field.
+  final String? initialValue;
+
+  /// Indicates if the text field is read-only.
+  final bool readOnly;
 
   @override
   State<BloweTextFormField> createState() => _BloweTextFormFieldState();
@@ -113,6 +123,8 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
       onEditingComplete: widget.onEditingComplete,
       keyboardType: widget.keyboardType,
       textInputAction: widget.textInputAction,
+      initialValue: widget.initialValue,
+      readOnly: widget.readOnly,
     );
   }
 
