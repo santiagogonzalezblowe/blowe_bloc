@@ -1,3 +1,10 @@
+## 0.1.7
+
+- Added `initialValue` property to `BloweTextFormField` to set the initial value of the text field.
+- Added `readOnly` property to `BloweTextFormField` to indicate if the text field is read-only.
+- Updated the constructor documentation to include the new properties.
+- Ensured the new properties are used in the build method of the text form field.
+
 ## 0.1.6
 
 - Added the ability to group items in BlowePaginationListView using a custom `groupBy` function.
