@@ -44,6 +44,7 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// - [suffixIcon]: Optional builder function for suffix icon.
   /// - [initialValue]: The initial value of the text field.
   /// - [readOnly]: Indicates if the text field is read-only (default is false).
+  /// - [onTap]: Optional callback when the text field is tapped.
   const BloweTextFormField({
     required this.labelText,
     super.key,
@@ -57,6 +58,7 @@ abstract class BloweTextFormField extends StatefulWidget {
     this.suffixIcon,
     this.initialValue,
     this.readOnly = false,
+    this.onTap,
   });
 
   /// Indicates if the text should be obscured.
@@ -92,6 +94,9 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// Indicates if the text field is read-only.
   final bool readOnly;
 
+  /// Optional callback when the text field is tapped.
+  final GestureTapCallback? onTap;
+
   @override
   State<BloweTextFormField> createState() => _BloweTextFormFieldState();
 }
@@ -125,6 +130,7 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
       textInputAction: widget.textInputAction,
       initialValue: widget.initialValue,
       readOnly: widget.readOnly,
+      onTap: widget.onTap,
     );
   }
 
