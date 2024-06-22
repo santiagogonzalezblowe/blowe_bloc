@@ -1,3 +1,9 @@
+## 0.1.8
+
+- Added `onTap` property to `BloweTextFormField` to allow for custom tap handling.
+- Updated the constructor documentation to include the new `onTap` property.
+- Ensured the new property is used in the build method of the text form field.
+
 ## 0.1.7
 
 - Added `initialValue` property to `BloweTextFormField` to set the initial value of the text field.
