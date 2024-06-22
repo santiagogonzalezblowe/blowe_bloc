@@ -1,3 +1,10 @@
+## 0.1.9
+
+- Added `context` parameter to `onTap` callback in `BloweTextFormField` to provide access to the widget's context.
+- Added `prefixIcon` property to `BloweTextFormField` to allow for custom prefix icons.
+- Updated the constructor documentation to include the new properties.
+- Ensured the new properties are used in the build method of the text form field.
+
 ## 0.1.8
 
 - Added `onTap` property to `BloweTextFormField` to allow for custom tap handling.

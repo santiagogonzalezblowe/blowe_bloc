@@ -20,10 +20,24 @@ typedef BloweTextFormFieldSuffixIconBuilder = Widget Function(
   VoidCallback toggleObscureText,
 );
 
+/// Typedef for a prefix icon builder function used by BloweTextFormField.
+///
+/// - [context]: The BuildContext of the widget.
+typedef BloweTextFormFieldPrefixIconBuilder = Widget Function(
+  BuildContext context,
+);
+
 /// Typedef for a label text builder function used by BloweTextFormField.
 ///
 /// - [context]: The BuildContext of the widget.
 typedef BloweTextFormFieldLabelTextBuilder = String Function(
+  BuildContext context,
+);
+
+/// Typedef for an onTap callback used by BloweTextFormField.
+///
+/// - [context]: The BuildContext of the widget.
+typedef BloweTextFormFieldOnTap = void Function(
   BuildContext context,
 );
 
@@ -42,6 +56,7 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// - [keyboardType]: Optional keyboard type.
   /// - [textInputAction]: Optional text input action.
   /// - [suffixIcon]: Optional builder function for suffix icon.
+  /// - [prefixIcon]: Optional builder function for prefix icon.
   /// - [initialValue]: The initial value of the text field.
   /// - [readOnly]: Indicates if the text field is read-only (default is false).
   /// - [onTap]: Optional callback when the text field is tapped.
@@ -56,6 +71,7 @@ abstract class BloweTextFormField extends StatefulWidget {
     this.keyboardType,
     this.textInputAction,
     this.suffixIcon,
+    this.prefixIcon,
     this.initialValue,
     this.readOnly = false,
     this.onTap,
@@ -85,6 +101,9 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// Optional builder function for suffix icon.
   final BloweTextFormFieldSuffixIconBuilder? suffixIcon;
 
+  /// Optional builder function for prefix icon.
+  final BloweTextFormFieldPrefixIconBuilder? prefixIcon;
+
   /// Builder function for the label text.
   final BloweTextFormFieldLabelTextBuilder labelText;
 
@@ -95,7 +114,7 @@ abstract class BloweTextFormField extends StatefulWidget {
   final bool readOnly;
 
   /// Optional callback when the text field is tapped.
-  final GestureTapCallback? onTap;
+  final BloweTextFormFieldOnTap? onTap;
 
   @override
   State<BloweTextFormField> createState() => _BloweTextFormFieldState();
@@ -121,6 +140,7 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
           _obscureText,
           toggleObscureText,
         ),
+        prefixIcon: widget.prefixIcon?.call(context),
       ),
       obscureText: _obscureText,
       validator: (value) => widget.validator?.call(context, value),
@@ -130,7 +150,7 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
       textInputAction: widget.textInputAction,
       initialValue: widget.initialValue,
       readOnly: widget.readOnly,
-      onTap: widget.onTap,
+      onTap: () => widget.onTap?.call(context),
     );
   }
 
