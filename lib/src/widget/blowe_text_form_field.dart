@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// Typedef for a validator function used by BloweTextFormField.
 ///
@@ -34,6 +35,13 @@ typedef BloweTextFormFieldLabelTextBuilder = String Function(
   BuildContext context,
 );
 
+/// Typedef for a hint text builder function used by BloweTextFormField.
+///
+/// - [context]: The BuildContext of the widget.
+typedef BloweTextFormFieldHintTextBuilder = String Function(
+  BuildContext context,
+);
+
 /// Typedef for an onTap callback used by BloweTextFormField.
 ///
 /// - [context]: The BuildContext of the widget.
@@ -42,11 +50,12 @@ typedef BloweTextFormFieldOnTap = void Function(
 );
 
 /// A text form field widget that supports optional obscuring of text,
-/// custom validation, and custom suffix icons.
+/// custom validation, and custom icons.
 abstract class BloweTextFormField extends StatefulWidget {
   /// Creates an instance of BloweTextFormField.
   ///
   /// - [labelText]: Builder function for the label text.
+  /// - [hintText]: Optional builder function for the hint text.
   /// - [obscureText]: Indicates if the text should be obscured
   /// (default is false).
   /// - [controller]: Optional TextEditingController.
@@ -60,8 +69,10 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// - [initialValue]: The initial value of the text field.
   /// - [readOnly]: Indicates if the text field is read-only (default is false).
   /// - [onTap]: Optional callback when the text field is tapped.
+  /// - [inputFormatters]: Optional list of input formatters.
   const BloweTextFormField({
     required this.labelText,
+    this.hintText,
     super.key,
     this.obscureText = false,
     this.controller,
@@ -75,6 +86,7 @@ abstract class BloweTextFormField extends StatefulWidget {
     this.initialValue,
     this.readOnly = false,
     this.onTap,
+    this.inputFormatters,
   });
 
   /// Indicates if the text should be obscured.
@@ -107,6 +119,9 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// Builder function for the label text.
   final BloweTextFormFieldLabelTextBuilder labelText;
 
+  /// Builder function for the hint text.
+  final BloweTextFormFieldHintTextBuilder? hintText;
+
   /// The initial value of the text field.
   final String? initialValue;
 
@@ -115,6 +130,9 @@ abstract class BloweTextFormField extends StatefulWidget {
 
   /// Optional callback when the text field is tapped.
   final BloweTextFormFieldOnTap? onTap;
+
+  /// Optional list of input formatters.
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   State<BloweTextFormField> createState() => _BloweTextFormFieldState();
@@ -135,6 +153,7 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
       controller: widget.controller,
       decoration: InputDecoration(
         labelText: widget.labelText(context),
+        hintText: widget.hintText?.call(context),
         suffixIcon: widget.suffixIcon?.call(
           context,
           _obscureText,
@@ -151,6 +170,7 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
       initialValue: widget.initialValue,
       readOnly: widget.readOnly,
       onTap: () => widget.onTap?.call(context),
+      inputFormatters: widget.inputFormatters,
     );
   }
 
