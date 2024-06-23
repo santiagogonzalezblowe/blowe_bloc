@@ -1,3 +1,10 @@
+## 0.2.0
+
+- Added `hintText` property to `BloweTextFormField` to display a hint when the text field is empty, with access to the widget's context.
+- Added `inputFormatters` property to `BloweTextFormField` to allow for custom input formatting.
+- Updated the constructor documentation to include the new properties.
+- Ensured the new properties are used in the build method of the text form field.
+
 ## 0.1.9
 
 - Added `context` parameter to `onTap` callback in `BloweTextFormField` to provide access to the widget's context.
