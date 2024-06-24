@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 /// Typedef for a title builder function used by BloweRadiusFormListTile.
 ///
 /// - [context]: The BuildContext of the widget.
+/// - [item]: The item to build the title for.
 typedef BloweRadiusFormListTileTitleBuilder<T> = String Function(
   BuildContext context,
   T item,
@@ -15,17 +16,21 @@ typedef BloweRadiusFormListTileTitleBuilder<T> = String Function(
 /// - [value]: The current value of the radius form.
 typedef BloweRadiusFormValidator<T> = String? Function(
   BuildContext context,
-  List<T> value,
+  T? value,
 );
 
 /// A form field widget that manages a list of radius list tiles.
 ///
-/// The `BloweRadiusForm` widget provides a way to manage a list of radius list tiles within a form, utilizing a `BloweRadiusFormController` to manage its state. This widget supports customization of the appearance and behavior, including validation, enabling/disabling, and visual styling.
+/// The `BloweRadiusForm` widget provides a way to manage a list of radius list
+/// tiles within a form, utilizing a `BloweRadiusFormController` to manage its
+/// state.
+/// This widget supports customization of the appearance and behavior, including
+/// validation, enabling/disabling, and visual styling.
 ///
 /// Example usage:
 /// ```dart
 /// final _controller = BloweRadiusFormController<Radius>(initialValue:
-/// [Radius.circular(8)]);
+/// Radius.circular(8));
 ///
 /// @override
 /// Widget build(BuildContext context) {
@@ -35,8 +40,8 @@ typedef BloweRadiusFormValidator<T> = String? Function(
 ///       items: [Radius.circular(8), Radius.circular(16), Radius.circular(24)],
 ///       titleBuilder: (context, item) => 'Radius: ${item.x}',
 ///       validator: (context, value) {
-///         if (value.isEmpty) {
-///           return 'Please select at least one radius.';
+///         if (value == null) {
+///           return 'Please select a radius.';
 ///         }
 ///         return null;
 ///       },
@@ -87,13 +92,13 @@ class BloweRadiusForm<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FormField<List<T>>(
+    return FormField<T>(
       initialValue: controller.value,
       enabled: enabled,
-      validator: (value) => validator?.call(context, value ?? []),
+      validator: (value) => validator?.call(context, value),
       builder: (state) {
         final enabled = state.widget.enabled;
-        final value = state.value ?? [];
+        final value = state.value;
         final didChange = state.didChange;
         final hasError = state.hasError;
 
@@ -103,28 +108,38 @@ class BloweRadiusForm<T> extends StatelessWidget {
             ...items.map(
               (item) => RadioListTile<T>(
                 title: Text(titleBuilder(context, item)),
-                groupValue: value.contains(item) ? item : null,
+                groupValue: value,
                 value: item,
                 onChanged: enabled
                     ? (newValue) {
-                        if (newValue == null) return;
-
-                        final newValueList = [...value];
-                        if (newValueList.contains(newValue)) {
-                          newValueList.remove(newValue);
-                        } else {
-                          newValueList.add(newValue);
-                        }
-                        didChange(newValueList);
-                        controller.value = newValueList;
+                        didChange(newValue);
+                        controller.value = newValue;
                       }
                     : null,
               ),
             ),
-            if (hasError && enabled) FormErrorText(state.errorText ?? ''),
+            if (hasError && enabled) BloweFormErrorText(state.errorText ?? ''),
           ],
         );
       },
     );
+  }
+}
+
+/// A controller for a form field that manages a single selected item.
+class BloweRadiusFormController<T> extends ValueNotifier<T?> {
+  /// Creates a BloweRadiusFormController.
+  ///
+  /// - [initialValue]: The initial value of the form field.
+  BloweRadiusFormController({T? initialValue}) : super(initialValue);
+
+  /// Gets the current value of the form field.
+  @override
+  T? get value => super.value;
+
+  /// Sets the value of the form field.
+  @override
+  set value(T? newValue) {
+    super.value = newValue;
   }
 }
