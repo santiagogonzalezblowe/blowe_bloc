@@ -49,7 +49,6 @@ class BloweSwitchFormListTile extends StatelessWidget {
   /// - [validator]: The validator function for the switch value.
   /// - [enabled]: Indicates if the switch is enabled (default is true).
   /// - [dense]: Indicates if the switch tile should be dense.
-  /// - [shape]: The shape of the switch tile.
   /// - [controlAffinity]: The control affinity for the switch tile (default
   /// is platform).
   const BloweSwitchFormListTile({
@@ -59,7 +58,6 @@ class BloweSwitchFormListTile extends StatelessWidget {
     super.key,
     this.enabled = true,
     this.dense,
-    this.shape,
     this.controlAffinity = ListTileControlAffinity.platform,
   });
 
@@ -79,11 +77,6 @@ class BloweSwitchFormListTile extends StatelessWidget {
   ///
   /// This function returns the title text to be displayed next to the switch.
   final BloweSwitchFormListTileTitleBuilder title;
-
-  /// The shape of the switch tile.
-  ///
-  /// This can be used to customize the shape of the switch's container.
-  final ShapeBorder? shape;
 
   /// Indicates if the switch tile should be dense.
   ///
@@ -113,6 +106,20 @@ class BloweSwitchFormListTile extends StatelessWidget {
         final value = state.value ?? false;
         final didChange = state.didChange;
         final hasError = state.hasError;
+
+        final shape = Theme.of(context).inputDecorationTheme.border?.copyWith(
+              borderSide: Theme.of(context)
+                  .inputDecorationTheme
+                  .border
+                  ?.borderSide
+                  .copyWith(
+                    color: enabled
+                        ? hasError
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).primaryColor
+                        : Theme.of(context).disabledColor,
+                  ),
+            );
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
