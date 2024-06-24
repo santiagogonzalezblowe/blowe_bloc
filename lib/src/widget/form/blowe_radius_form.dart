@@ -60,6 +60,7 @@ class BloweRadiusForm<T> extends StatelessWidget {
   /// - [enabled]: Indicates if the form is enabled (default is true).
   /// - [controlAffinity]: The control affinity for the radio list tile
   /// (default is platform).
+  /// - [toggleable]: Indicates if the radio list tile is toggleable.
   const BloweRadiusForm({
     required this.controller,
     required this.items,
@@ -68,6 +69,7 @@ class BloweRadiusForm<T> extends StatelessWidget {
     super.key,
     this.enabled = true,
     this.controlAffinity = ListTileControlAffinity.platform,
+    this.toggleable = false,
   });
 
   /// The controller for the form.
@@ -95,6 +97,9 @@ class BloweRadiusForm<T> extends StatelessWidget {
 
   /// The control affinity for the radio list tile.
   final ListTileControlAffinity controlAffinity;
+
+  /// Indicates if the radio list tile is toggleable.
+  final bool toggleable;
 
   @override
   Widget build(BuildContext context) {
@@ -134,15 +139,11 @@ class BloweRadiusForm<T> extends StatelessWidget {
                         title: Text(titleBuilder(context, item)),
                         groupValue: value,
                         value: item,
+                        toggleable: toggleable,
                         onChanged: enabled
                             ? (newValue) {
-                                if (newValue == value) {
-                                  didChange(null);
-                                  controller.value = null;
-                                } else {
-                                  didChange(newValue);
-                                  controller.value = newValue;
-                                }
+                                didChange(newValue);
+                                controller.value = newValue;
                               }
                             : null,
                         controlAffinity: controlAffinity,
