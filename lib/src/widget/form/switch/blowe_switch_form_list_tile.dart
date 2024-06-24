@@ -14,7 +14,7 @@ typedef BloweSwitchFormListTileTitleBuilder = String Function(
 /// - [value]: The current value of the switch.
 typedef BloweSwitchFormListTileValidator = String? Function(
   BuildContext context,
-  bool? value,
+  bool value,
 );
 
 /// A form field widget that wraps a SwitchListTile.
@@ -107,7 +107,7 @@ abstract class BloweSwitchFormListTile extends StatelessWidget {
     return FormField<bool>(
       initialValue: controller.value,
       enabled: enabled,
-      validator: (value) => validator?.call(context, value),
+      validator: (value) => validator?.call(context, value ?? false),
       builder: (state) {
         final enabled = state.widget.enabled;
         final value = state.value ?? false;
