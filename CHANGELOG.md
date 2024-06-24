@@ -1,3 +1,16 @@
+## 0.2.1
+
+### New Features
+
+- **BloweBoolFormListTile**: Introduced a new form field widget that can be used as either a `SwitchListTile` or a `CheckboxListTile`, providing a unified interface for boolean form controls.
+- **BloweBoolFormController**: Added a new controller to manage the state of boolean form controls.
+- **BloweBoolListTileType**: Created an enum to specify the type of ListTile (`switchTile` or `checkboxTile`), allowing dynamic rendering of the tile type.
+- **Customization**: Added support for dynamic title and validator functions to enhance customization and validation capabilities.
+
+### Improvements
+
+- Improved documentation and code comments for better clarity and maintainability.
+
 ## 0.2.0
 
 - Added `hintText` property to `BloweTextFormField` to display a hint when the text field is empty, with access to the widget's context.
