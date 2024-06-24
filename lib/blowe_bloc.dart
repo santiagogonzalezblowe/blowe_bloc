@@ -56,5 +56,7 @@ export './src/widget/form/blowe_text_form_field.dart';
 export './src/widget/form/bool_form/blowe_bool_form_controller.dart';
 export './src/widget/form/bool_form/blowe_bool_form_list_tile.dart';
 export './src/widget/form/form_error_text.dart';
+export './src/widget/form/radius_form/blowe_radius_form.dart';
+export './src/widget/form/radius_form/blowe_radius_form_controller.dart';
 export './src/widget/selector/blowe_bloc_selector.dart';
 export './src/widget/selector/blowe_multi_bloc_selector.dart';

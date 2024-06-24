@@ -180,14 +180,7 @@ class BloweBoolFormListTile extends StatelessWidget {
                 dense: dense,
                 controlAffinity: controlAffinity,
               ),
-            if (hasError && enabled)
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8),
-                child: Text(
-                  state.errorText ?? '',
-                  style: Theme.of(context).inputDecorationTheme.errorStyle,
-                ),
-              ),
+            if (hasError && enabled) FormErrorText(state.errorText ?? ''),
           ],
         );
       },
