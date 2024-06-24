@@ -58,6 +58,8 @@ class BloweRadiusForm<T> extends StatelessWidget {
   /// list tile.
   /// - [validator]: The validator function for the form value.
   /// - [enabled]: Indicates if the form is enabled (default is true).
+  /// - [controlAffinity]: The control affinity for the radio list tile
+  /// (default is platform).
   const BloweRadiusForm({
     required this.controller,
     required this.items,
@@ -65,6 +67,7 @@ class BloweRadiusForm<T> extends StatelessWidget {
     this.validator,
     super.key,
     this.enabled = true,
+    this.controlAffinity = ListTileControlAffinity.platform,
   });
 
   /// The controller for the form.
@@ -90,6 +93,9 @@ class BloweRadiusForm<T> extends StatelessWidget {
   /// interacted with.
   final bool enabled;
 
+  /// The control affinity for the radio list tile.
+  final ListTileControlAffinity controlAffinity;
+
   @override
   Widget build(BuildContext context) {
     return FormField<T>(
@@ -102,20 +108,47 @@ class BloweRadiusForm<T> extends StatelessWidget {
         final didChange = state.didChange;
         final hasError = state.hasError;
 
+        final shape = Theme.of(context).inputDecorationTheme.border?.copyWith(
+              borderSide: Theme.of(context)
+                  .inputDecorationTheme
+                  .border
+                  ?.borderSide
+                  .copyWith(
+                    color: enabled
+                        ? hasError
+                            ? Theme.of(context).colorScheme.error
+                            : Theme.of(context).primaryColor
+                        : Theme.of(context).disabledColor,
+                  ),
+            );
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ...items.map(
-              (item) => RadioListTile<T>(
-                title: Text(titleBuilder(context, item)),
-                groupValue: value,
-                value: item,
-                onChanged: enabled
-                    ? (newValue) {
-                        didChange(newValue);
-                        controller.value = newValue;
-                      }
-                    : null,
+            Material(
+              shape: shape,
+              child: Column(
+                children: items
+                    .map(
+                      (item) => RadioListTile<T>(
+                        title: Text(titleBuilder(context, item)),
+                        groupValue: value,
+                        value: item,
+                        onChanged: enabled
+                            ? (newValue) {
+                                if (newValue == value) {
+                                  didChange(null);
+                                  controller.value = null;
+                                } else {
+                                  didChange(newValue);
+                                  controller.value = newValue;
+                                }
+                              }
+                            : null,
+                        controlAffinity: controlAffinity,
+                      ),
+                    )
+                    .toList(),
               ),
             ),
             if (hasError && enabled) BloweFormErrorText(state.errorText ?? ''),
