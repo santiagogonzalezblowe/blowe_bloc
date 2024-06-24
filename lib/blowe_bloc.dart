@@ -54,6 +54,7 @@ export './src/widget/blowe_dropdown_button_form_field.dart';
 export './src/widget/blowe_pagination_list_view.dart';
 export './src/widget/form/blowe_text_form_field.dart';
 export './src/widget/form/form_error_text.dart';
+export './src/widget/form/switch/blowe_switch_form_controller.dart';
 export './src/widget/form/switch/blowe_switch_form_list_tile.dart';
 export './src/widget/selector/blowe_bloc_selector.dart';
 export './src/widget/selector/blowe_multi_bloc_selector.dart';
