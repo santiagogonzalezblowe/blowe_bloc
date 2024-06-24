@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 /// A widget that displays an error message for a form field.
 ///
-/// The `FormErrorText` widget is typically used to display validation errors
-/// for form fields. It provides a consistent style and padding for error
+/// The `BloweFormErrorText` widget is typically used to display validation
+/// errors for form fields. It provides a consistent style and padding for error
 /// messages.
-class FormErrorText extends StatelessWidget {
-  /// Creates an instance of `FormErrorText`.
+class BloweFormErrorText extends StatelessWidget {
+  /// Creates an instance of `BloweFormErrorText`.
   ///
   /// - [text]: The error message to display.
-  const FormErrorText(this.text, {super.key});
+  const BloweFormErrorText(this.text, {super.key});
 
   /// The error message to display.
   final String text;

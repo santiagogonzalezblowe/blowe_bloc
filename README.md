@@ -15,7 +15,7 @@ To use `blowe_bloc`, add it to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  blowe_bloc: ^0.2.1
+  blowe_bloc: ^0.2.2
 ```
 
 Then run \`flutter pub get\` to install the package.
