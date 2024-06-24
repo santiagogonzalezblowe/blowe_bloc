@@ -33,7 +33,7 @@ typedef BloweSwitchFormListTileValidator = String? Function(
 ///   return Form(
 ///     child: Column(
 ///       children: [
-///         MySwitchFormListTile(
+///         BloweSwitchFormListTile(
 ///           controller: _switchController,
 ///         ),
 ///       ],
@@ -41,7 +41,7 @@ typedef BloweSwitchFormListTileValidator = String? Function(
 ///   );
 /// }
 /// ```
-abstract class BloweSwitchFormListTile extends StatelessWidget {
+class BloweSwitchFormListTile extends StatelessWidget {
   /// Creates an instance of `BloweSwitchFormListTile`.
   ///
   /// - [controller]: The controller for the switch, managing its state.
