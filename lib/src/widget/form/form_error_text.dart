@@ -20,10 +20,7 @@ class FormErrorText extends StatelessWidget {
       padding: const EdgeInsets.only(left: 16, top: 8),
       child: Text(
         text,
-        style: TextStyle(
-          color: Theme.of(context).colorScheme.error,
-          fontSize: 12,
-        ),
+        style: Theme.of(context).inputDecorationTheme.errorStyle,
       ),
     );
   }

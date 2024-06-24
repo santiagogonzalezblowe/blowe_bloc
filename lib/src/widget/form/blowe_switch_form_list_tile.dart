@@ -1,4 +1,4 @@
-import 'package:blowe_bloc/src/widget/form/switch/blowe_switch_form_controller.dart';
+import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:flutter/material.dart';
 
 /// Typedef for a title builder function used by BloweSwitchFormListTile.
@@ -20,13 +20,13 @@ typedef BloweSwitchFormListTileValidator = String? Function(
 /// A form field widget that wraps a SwitchListTile.
 ///
 /// The `BloweSwitchFormListTile` widget provides a way to use a switch
-/// within a form, utilizing a `BloweSwitchFormController` to manage
+/// within a form, utilizing a `BloweBoolFormController` to manage
 /// its state. This widget supports customization of the switch's
 /// appearance and behavior, including validation, enabling/disabling, and visual styling.
 ///
 /// Example usage:
 /// ```dart
-/// final _switchController = BloweSwitchFormController(initialValue: true);
+/// final _switchController = BloweBoolFormController(initialValue: true);
 ///
 /// @override
 /// Widget build(BuildContext context) {
@@ -63,9 +63,9 @@ class BloweSwitchFormListTile extends StatelessWidget {
 
   /// The controller for the switch.
   ///
-  /// The `BloweSwitchFormController` manages the state of the switch,
+  /// The `BloweBoolFormController` manages the state of the switch,
   /// including its initial value and any changes to its state.
-  final BloweSwitchFormController controller;
+  final BloweBoolFormController controller;
 
   /// Indicates if the switch is enabled.
   ///
@@ -137,14 +137,7 @@ class BloweSwitchFormListTile extends StatelessWidget {
               dense: dense,
               controlAffinity: controlAffinity,
             ),
-            if (hasError && enabled)
-              Padding(
-                padding: const EdgeInsets.only(left: 16, top: 8),
-                child: Text(
-                  state.errorText ?? '',
-                  style: Theme.of(context).inputDecorationTheme.errorStyle,
-                ),
-              ),
+            if (hasError && enabled) FormErrorText(state.errorText ?? ''),
           ],
         );
       },
