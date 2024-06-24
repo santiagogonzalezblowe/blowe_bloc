@@ -139,10 +139,10 @@ class BloweSwitchFormListTile extends StatelessWidget {
             ),
             if (hasError && enabled)
               Padding(
-                padding: const EdgeInsets.only(left: 16),
+                padding: const EdgeInsets.only(left: 16, top: 8),
                 child: Text(
                   state.errorText ?? '',
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  style: Theme.of(context).inputDecorationTheme.errorStyle,
                 ),
               ),
           ],
