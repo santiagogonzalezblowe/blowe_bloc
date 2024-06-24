@@ -1,3 +1,17 @@
+## 0.2.2
+
+### New Features
+
+- **BloweRadiusForm**: Introduced a new form field widget that manages a list of radio list tiles within a form, providing an easy way to handle single selection inputs.
+- **BloweRadiusFormController**: Added a new controller to manage the state of the selected item in the `BloweRadiusForm`.
+- **Toggleable**: Added `toggleable` property to `RadioListTile` within the form to allow deselecting items.
+- **Dynamic Shape Handling**: Improved shape handling to dynamically reflect error and disabled states, providing better visual feedback to users.
+
+### Improvements
+
+- Improved documentation and examples to include the new `BloweRadiusForm` widget and its usage.
+- Enhanced user experience with better visual feedback through dynamic shape adjustments based on form state.
+
 ## 0.2.1
 
 ### New Features
