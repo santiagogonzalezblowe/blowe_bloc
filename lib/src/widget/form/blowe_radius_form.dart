@@ -29,23 +29,20 @@ typedef BloweRadiusFormValidator<T> = String? Function(
 ///
 /// Example usage:
 /// ```dart
-/// final _controller = BloweRadiusFormController<Radius>(initialValue:
-/// Radius.circular(8));
+/// final _controller = BloweRadiusFormController<int>(initialValue: 1);
 ///
 /// @override
 /// Widget build(BuildContext context) {
-///   return Form(
-///     child: BloweRadiusForm<Radius>(
-///       controller: _controller,
-///       items: [Radius.circular(8), Radius.circular(16), Radius.circular(24)],
-///       titleBuilder: (context, item) => 'Radius: ${item.x}',
-///       validator: (context, value) {
-///         if (value == null) {
-///           return 'Please select a radius.';
-///         }
-///         return null;
-///       },
-///     ),
+///   return BloweRadiusForm<int>(
+///     controller: _controller,
+///     items: [1, 2, 3],
+///     titleBuilder: (context, item) => 'Item: $item',
+///     validator: (context, value) {
+///       if (value == null) {
+///         return 'Please select an item.';
+///       }
+///       return null;
+///     },
 ///   );
 /// }
 /// ```

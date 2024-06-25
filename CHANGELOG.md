@@ -1,3 +1,24 @@
+## 0.2.3
+
+### New Features
+
+- **README and Documentation Updates**: Enhanced README with detailed descriptions, examples, and structured sections for Blowe Logic, Blowe Widgets, and Blowe Models.
+  - Added descriptions and examples for `BloweLoadBloc`, `BloweWatchBloc`, `BlowePaginationBloc`.
+  - Added descriptions and examples for `BloweBlocSelector`, `BloweMultiBlocSelector`, `BloweBlocListener`, `BloweBlocButton`, `BlowePaginationListView`, `BloweTextFormField`, `BloweDropdownButtonFormField`, `BloweBoolFormListTile`, `BloweRadiusForm`.
+  - Included detailed usage examples and explanations for each widget and model.
+
+### Improvements
+
+- **BloweRadiusForm Documentation**: Updated the internal documentation of `BloweRadiusForm` to reflect changes and provide a clearer example.
+- **README Enhancement**: The README now includes a structured and comprehensive description of the package, along with examples for each component.
+- **Pagination Logic Fix**: Addressed an issue in `BlowePaginationListView` where backend calls were being made too frequently with large `maxScrollExtent` values. Now, backend calls are triggered when the scroll position is within 200 pixels from the bottom, ensuring consistent behavior regardless of content size.
+- **Example Application**: Added a new example application in the `example` folder demonstrating the usage of various components in the `blowe_bloc` package.
+  - The example includes setup for `NotesLoadBloc`, `NotesWatchBloc`, and `NotesPaginationBloc`, along with corresponding models and form widgets.
+
+### Bug Fixes
+
+- **Pagination Trigger Issue**: Fixed the issue where backend calls in `BlowePaginationListView` were being made too frequently as the `maxScrollExtent` increased. The new implementation ensures calls are made consistently 200 pixels from the bottom.
+
 ## 0.2.2
 
 ### New Features
