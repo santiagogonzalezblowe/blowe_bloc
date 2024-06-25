@@ -1,3 +1,19 @@
+## 0.2.4
+
+### Bug Fixes
+
+- **BlowePaginationListView**:
+
+  - Fixed an issue where applying filters to the paginated list caused incorrect pagination behavior. The problem was due to the filtered item count not matching the total item count, leading to unnecessary fetches for more pages.
+  - Added a `filteredData` parameter to `_BlowePaginationListViewLoaded` to handle filtered items separately.
+  - Adjusted pagination control logic to use `filteredData` for determining item count.
+  - Updated scroll controller listener to prevent additional fetches when all items are loaded.
+  - Improved handling of group headers and empty state in the paginated list.
+
+### Example App
+
+- Fixed issues in the `books_repository` of the example project to ensure proper functionality and to reflect the latest updates in the `BlowePaginationListView`.
+
 ## 0.2.3
 
 ### New Features
