@@ -206,7 +206,7 @@ class __BlowePaginationListViewStateLoaded<
           }
 
           if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent * 0.8) {
+              _scrollController.position.maxScrollExtent - 200) {
             context.read<B>().add(
                   BloweFetchMore(widget.paramsProvider()),
                 );
