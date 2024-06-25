@@ -1,4 +1,5 @@
 import 'package:example/app/extensions/stateful_navigation_shell.dart';
+import 'package:example/features/login/ui/page/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -16,6 +17,12 @@ class ShellHomeScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Blowe Bloc Example'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => LoginPage.go(context),
+          ),
+        ],
       ),
       body: navigationShell,
       bottomNavigationBar: Builder(

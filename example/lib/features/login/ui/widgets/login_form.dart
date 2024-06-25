@@ -6,7 +6,6 @@ import 'package:example/app/widgets/radius_form/reading_frequency_radius_form.da
 import 'package:example/app/widgets/switch_form_list_tile/terms_switch_form_list_tile.dart';
 import 'package:example/app/widgets/text_form_field/email_text_form_field.dart';
 import 'package:example/app/widgets/text_form_field/password_text_form_field.dart';
-import 'package:example/features/load_book/ui/page/load_book_page.dart';
 import 'package:example/features/login/logic/login_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -73,11 +72,9 @@ class _LoginFormState extends State<LoginForm> {
           BloweBlocButton<LoginBloc, ElevatedButton>(
             text: 'Sign in',
             onPressed: () {
-              //TODO: Uncomment this line
-              // if (!_formKey.currentState!.validate()) return;
+              if (!_formKey.currentState!.validate()) return;
 
-              // context.read<LoginBloc>().add(BloweFetch(params));
-              LoadBookPage.go(context);
+              context.read<LoginBloc>().add(BloweFetch(params));
             },
           ),
         ],
