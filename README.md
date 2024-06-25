@@ -1,5 +1,5 @@
 <p align="center">
-<img src="" height="100" alt="Blowe Bloc Package" />
+<img src="https://raw.githubusercontent.com/santiagogonzalezblowe/blowe_bloc/master/assets/blowe_logo.png" height="100" alt="Blowe Bloc Package" />
 </p>
 
 ---

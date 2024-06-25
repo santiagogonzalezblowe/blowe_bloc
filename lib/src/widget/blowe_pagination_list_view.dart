@@ -119,7 +119,10 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
           }
 
           return _BlowePaginationListViewLoaded<B, T, P, G>(
-            data: BlowePaginationModel(items: items, totalCount: items.length),
+            data: BlowePaginationModel(
+              items: items,
+              totalCount: state.data.totalCount,
+            ),
             isLoadingMore: state.isLoadingMore,
             itemBuilder: itemBuilder,
             padding: padding,
