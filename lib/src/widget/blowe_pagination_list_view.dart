@@ -106,11 +106,11 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
         }
 
         if (state is BloweCompleted<BlowePaginationModel<T>>) {
-          final items = filter != null
+          final filteredItems = filter != null
               ? state.data.items.where(filter!).toList()
               : state.data.items;
 
-          if (items.isEmpty && emptyWidget != null) {
+          if (filteredItems.isEmpty && emptyWidget != null) {
             return _EmptyList<B, P>(
               paramsProvider: paramsProvider,
               padding: padding,
@@ -119,10 +119,11 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
           }
 
           return _BlowePaginationListViewLoaded<B, T, P, G>(
-            data: BlowePaginationModel(
-              items: items,
-              totalCount: state.data.totalCount,
+            filteredData: BlowePaginationModel(
+              items: filteredItems,
+              totalCount: filteredItems.length,
             ),
+            data: state.data,
             isLoadingMore: state.isLoadingMore,
             itemBuilder: itemBuilder,
             padding: padding,
@@ -152,6 +153,7 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
   /// - [groupHeaderBuilder]: Optional builder function to create group headers.
   const _BlowePaginationListViewLoaded({
     required this.data,
+    required this.filteredData,
     required this.isLoadingMore,
     required this.itemBuilder,
     required this.paramsProvider,
@@ -163,6 +165,9 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
 
   /// The data for the list view.
   final BlowePaginationModel<T> data;
+
+  /// The filtered data for the list view.
+  final BlowePaginationModel<T> filteredData;
 
   /// Indicates if more data is being loaded.
   final bool isLoadingMore;
@@ -248,7 +253,7 @@ class __BlowePaginationListViewStateLoaded<
 
   int _getItemCount() {
     if (widget.groupBy == null) {
-      return widget.data.items.length + (widget.isLoadingMore ? 1 : 0);
+      return widget.filteredData.items.length + (widget.isLoadingMore ? 1 : 0);
     }
     final groupedItems = _groupItems();
     var count = groupedItems.keys.length;
@@ -263,7 +268,7 @@ class __BlowePaginationListViewStateLoaded<
 
   dynamic _getItemAt(int index) {
     if (widget.groupBy == null) {
-      return widget.data.items[index];
+      return widget.filteredData.items[index];
     }
     final groupedItems = _groupItems();
     var currentIndex = 0;
@@ -288,7 +293,7 @@ class __BlowePaginationListViewStateLoaded<
 
   Map<G, List<T>> _groupItems() {
     final groupedItems = <G, List<T>>{};
-    for (final item in widget.data.items) {
+    for (final item in widget.filteredData.items) {
       final group = widget.groupBy!(item);
       if (!groupedItems.containsKey(group)) {
         groupedItems[group] = [];

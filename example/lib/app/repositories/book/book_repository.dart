@@ -7,10 +7,23 @@ class BookRepository {
 
   final BookService bookService;
 
+  BooksPaginationModel? _books;
+
   Future<BookModel> loadRandomBook() => bookService.loadRandomBook();
 
   Stream<BookModel> watchRandomBook() => bookService.watchRandomBook();
 
-  Future<BooksPaginationModel> loadBooks(int page) =>
-      bookService.loadBooks(page);
+  Future<BooksPaginationModel> loadBooks(int page) async {
+    final books = await bookService.loadBooks(page);
+
+    if (page != 0) {
+      final items = _books?.items ?? [];
+
+      books.items.insertAll(0, items);
+    }
+
+    _books = books;
+
+    return books;
+  }
 }
