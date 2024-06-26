@@ -1,3 +1,9 @@
+## 0.2.5
+
+### Bug Fixes
+
+- **BlowePaginationListView**: Fixed an issue where the ScrollController was not updating on Android devices by implementing `BouncingScrollPhysics` with `AlwaysScrollableScrollPhysics` as the parent. This change ensures consistent scroll behavior and accurate pagination across both Android and iOS platforms.
+
 ## 0.2.4
 
 ### Bug Fixes
