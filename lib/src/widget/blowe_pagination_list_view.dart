@@ -233,7 +233,9 @@ class __BlowePaginationListViewStateLoaded<
         context.read<B>().add(BloweFetch(widget.paramsProvider()));
       },
       child: ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
+        physics: const BouncingScrollPhysics(
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         padding: widget.padding,
         controller: _scrollController,
         itemCount: _getItemCount(),
