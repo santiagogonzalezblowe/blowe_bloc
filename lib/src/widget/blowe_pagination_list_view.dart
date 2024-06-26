@@ -232,21 +232,27 @@ class __BlowePaginationListViewStateLoaded<
       onRefresh: () async {
         context.read<B>().add(BloweFetch(widget.paramsProvider()));
       },
-      child: ListView.builder(
-        physics: const AlwaysScrollableScrollPhysics(),
-        padding: widget.padding,
-        controller: _scrollController,
-        itemCount: _getItemCount(),
-        itemBuilder: (context, index) {
-          if (index == _getItemCount() - 1 && widget.isLoadingMore) {
-            return const LinearProgressIndicator(minHeight: 2);
-          }
-          final item = _getItemAt(index);
-          if (item is _GroupHeader) {
-            return item.header;
-          }
-          return widget.itemBuilder(context, item as T);
+      child: NotificationListener<OverscrollIndicatorNotification>(
+        onNotification: (OverscrollIndicatorNotification notification) {
+          notification.disallowIndicator();
+          return true;
         },
+        child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: widget.padding,
+          controller: _scrollController,
+          itemCount: _getItemCount(),
+          itemBuilder: (context, index) {
+            if (index == _getItemCount() - 1 && widget.isLoadingMore) {
+              return const LinearProgressIndicator(minHeight: 2);
+            }
+            final item = _getItemAt(index);
+            if (item is _GroupHeader) {
+              return item.header;
+            }
+            return widget.itemBuilder(context, item as T);
+          },
+        ),
       ),
     );
   }
