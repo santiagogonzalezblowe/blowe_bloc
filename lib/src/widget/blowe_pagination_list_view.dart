@@ -279,7 +279,11 @@ class __BlowePaginationListViewStateLoaded<
     return _BloweRefreshWrapper(
       onRefreshEnabled: widget.onRefreshEnabled,
       onRefresh: () async {
-        context.read<B>().add(BloweFetch(widget.paramsProvider()));
+        if (widget.bloc != null) {
+          widget.bloc!.add(BloweFetch(widget.paramsProvider()));
+        } else {
+          context.read<B>().add(BloweFetch(widget.paramsProvider()));
+        }
       },
       child: ListView.builder(
         physics: const BouncingScrollPhysics(

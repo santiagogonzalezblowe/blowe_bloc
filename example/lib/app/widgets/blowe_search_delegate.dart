@@ -97,6 +97,7 @@ class BloweSearchDelegate<B extends BlowePaginationBloc<dynamic, P>, T, P>
           }
 
           return BlowePaginationListView<B, T, P, void>(
+            bloc: bloc,
             itemBuilder: (context, item) {
               return itemBuilder(context, item, close);
             },
