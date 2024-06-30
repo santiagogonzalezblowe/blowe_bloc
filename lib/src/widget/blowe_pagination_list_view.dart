@@ -54,6 +54,10 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
   /// - [filter]: Optional function to filter items in the list.
   /// - [groupBy]: Optional function to group items in the list.
   /// - [groupHeaderBuilder]: Optional builder function to create group headers.
+  /// - [errorBuilder]: Optional builder function to create a custom error
+  /// widget.
+  /// - [onRefreshEnabled]: Indicates if the refresh functionality is enabled.
+  /// - [bloc]: The bloc to use for the list view.
   const BlowePaginationListView({
     required this.itemBuilder,
     required this.paramsProvider,
@@ -64,6 +68,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
     this.groupHeaderBuilder,
     this.errorBuilder,
     this.onRefreshEnabled = true,
+    this.bloc,
     super.key,
   }) : assert(
           groupBy == null || groupHeaderBuilder != null,
@@ -97,9 +102,13 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
   /// Indicates if the refresh functionality is enabled.
   final bool onRefreshEnabled;
 
+  /// The bloc to use for the list view.
+  final B? bloc;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<B, BloweState>(
+      bloc: bloc,
       builder: (context, state) {
         if (state is BloweInProgress) {
           return const Center(
@@ -116,7 +125,11 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
               Text(state.error.toString()),
               ElevatedButton(
                 onPressed: () {
-                  context.read<B>().add(BloweFetch(paramsProvider()));
+                  if (bloc != null) {
+                    bloc!.add(BloweFetch(paramsProvider()));
+                  } else {
+                    context.read<B>().add(BloweFetch(paramsProvider()));
+                  }
                 },
                 child: const Text('Retry'),
               ),
@@ -135,6 +148,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
               padding: padding,
               emptyWidget: emptyWidget!,
               onRefreshEnabled: onRefreshEnabled,
+              bloc: bloc,
             );
           }
 
@@ -151,6 +165,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
             groupBy: groupBy,
             groupHeaderBuilder: groupHeaderBuilder,
             onRefreshEnabled: onRefreshEnabled,
+            bloc: bloc,
           );
         }
 
@@ -183,6 +198,7 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
     this.groupBy,
     this.groupHeaderBuilder,
     this.onRefreshEnabled = true,
+    this.bloc,
   });
 
   /// The data for the list view.
@@ -212,6 +228,9 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
   /// Indicates if the refresh functionality is enabled.
   final bool onRefreshEnabled;
 
+  /// The bloc to use for the list view.
+  final B? bloc;
+
   @override
   State<_BlowePaginationListViewLoaded<B, T, P, G>> createState() =>
       __BlowePaginationListViewStateLoaded<B, T, P, G>();
@@ -237,9 +256,13 @@ class __BlowePaginationListViewStateLoaded<
 
           if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 200) {
-            context.read<B>().add(
-                  BloweFetchMore(widget.paramsProvider()),
-                );
+            if (widget.bloc != null) {
+              widget.bloc!.add(BloweFetchMore(widget.paramsProvider()));
+            } else {
+              context.read<B>().add(
+                    BloweFetchMore(widget.paramsProvider()),
+                  );
+            }
           }
         },
       );
@@ -339,6 +362,7 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
     required this.emptyWidget,
     this.padding,
     this.onRefreshEnabled = true,
+    this.bloc,
     super.key,
   });
 
@@ -354,12 +378,19 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
   /// Indicates if the refresh functionality is enabled.
   final bool onRefreshEnabled;
 
+  /// The bloc to use for the list view.
+  final B? bloc;
+
   @override
   Widget build(BuildContext context) {
     return _BloweRefreshWrapper(
       onRefreshEnabled: onRefreshEnabled,
       onRefresh: () async {
-        context.read<B>().add(BloweFetch(paramsProvider()));
+        if (bloc != null) {
+          bloc!.add(BloweFetch(paramsProvider()));
+        } else {
+          context.read<B>().add(BloweFetch(paramsProvider()));
+        }
       },
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),

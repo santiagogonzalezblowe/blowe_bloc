@@ -1,7 +1,8 @@
-import 'package:example/features/books/logic/books_blocs_provider.dart';
 import 'package:example/features/books/ui/widgets/books_filter.dart';
 import 'package:example/features/books/ui/widgets/books_list_view.dart';
+import 'package:example/features/books/ui/widgets/search_book_button.dart';
 import 'package:flutter/material.dart';
+import 'package:example/features/books/logic/books_blocs_provider.dart';
 import 'package:go_router/go_router.dart';
 
 class BooksPage extends StatelessWidget {
@@ -16,6 +17,7 @@ class BooksPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const BooksBlocsProvider(
       child: Scaffold(
+        floatingActionButton: SearchBookButton(),
         body: Column(
           children: [
             Padding(
