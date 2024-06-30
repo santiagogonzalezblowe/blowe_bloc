@@ -1,3 +1,10 @@
+## 0.2.6
+
+### New Features
+
+- **Error Widget**: Added custom error widget support in `BlowePaginationListView` using `errorBuilder`.
+- **On Refresh Enable**: Added the `onRefreshEnabled` parameter to `BlowePaginationListView` to control the visibility of the refresh indicator.
+
 ## 0.2.5
 
 ### Bug Fixes

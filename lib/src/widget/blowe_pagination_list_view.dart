@@ -30,6 +30,15 @@ typedef BloweGroupHeaderBuilder<T, G> = Widget Function(
   List<T> items,
 );
 
+/// Typedef for a widget builder function used to build the error widget.
+///
+/// - [context]: The BuildContext of the widget.
+/// - [error]: The exception that occurred.
+typedef BlowePaginationErrorBuilder = Widget Function(
+  BuildContext context,
+  Exception error,
+);
+
 /// A widget that displays a paginated list of items using a
 /// BlowePaginationBloc.
 /// It handles loading, error, and completed states of the BlowePaginationBloc.
@@ -53,6 +62,8 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
     this.filter,
     this.groupBy,
     this.groupHeaderBuilder,
+    this.errorBuilder,
+    this.onRefreshEnabled = true,
     super.key,
   }) : assert(
           groupBy == null || groupHeaderBuilder != null,
@@ -80,6 +91,12 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
   /// Optional builder function to create group headers.
   final BloweGroupHeaderBuilder<T, G>? groupHeaderBuilder;
 
+  /// Optional builder function to create a custom error widget.
+  final BlowePaginationErrorBuilder? errorBuilder;
+
+  /// Indicates if the refresh functionality is enabled.
+  final bool onRefreshEnabled;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<B, BloweState>(
@@ -91,6 +108,8 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
         }
 
         if (state is BloweError) {
+          if (errorBuilder != null) return errorBuilder!(context, state.error);
+
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -115,6 +134,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
               paramsProvider: paramsProvider,
               padding: padding,
               emptyWidget: emptyWidget!,
+              onRefreshEnabled: onRefreshEnabled,
             );
           }
 
@@ -130,6 +150,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
             paramsProvider: paramsProvider,
             groupBy: groupBy,
             groupHeaderBuilder: groupHeaderBuilder,
+            onRefreshEnabled: onRefreshEnabled,
           );
         }
 
@@ -161,6 +182,7 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
     this.padding,
     this.groupBy,
     this.groupHeaderBuilder,
+    this.onRefreshEnabled = true,
   });
 
   /// The data for the list view.
@@ -186,6 +208,9 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
 
   /// Optional builder function to create group headers.
   final BloweGroupHeaderBuilder<T, G>? groupHeaderBuilder;
+
+  /// Indicates if the refresh functionality is enabled.
+  final bool onRefreshEnabled;
 
   @override
   State<_BlowePaginationListViewLoaded<B, T, P, G>> createState() =>
@@ -228,7 +253,8 @@ class __BlowePaginationListViewStateLoaded<
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return _BloweRefreshWrapper(
+      onRefreshEnabled: widget.onRefreshEnabled,
       onRefresh: () async {
         context.read<B>().add(BloweFetch(widget.paramsProvider()));
       },
@@ -312,6 +338,7 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
     required this.paramsProvider,
     required this.emptyWidget,
     this.padding,
+    this.onRefreshEnabled = true,
     super.key,
   });
 
@@ -324,9 +351,13 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
   /// A widget to display when the list is empty.
   final Widget emptyWidget;
 
+  /// Indicates if the refresh functionality is enabled.
+  final bool onRefreshEnabled;
+
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
+    return _BloweRefreshWrapper(
+      onRefreshEnabled: onRefreshEnabled,
       onRefresh: () async {
         context.read<B>().add(BloweFetch(paramsProvider()));
       },
@@ -343,4 +374,40 @@ class _GroupHeader {
   const _GroupHeader({required this.header});
 
   final Widget header;
+}
+
+/// A widget that wraps a child with a RefreshIndicator if onRefresh is enabled.
+class _BloweRefreshWrapper extends StatelessWidget {
+  /// Creates an instance of BloweRefreshWrapper.
+  ///
+  /// - [onRefreshEnabled]: A boolean to enable or disable refresh
+  /// functionality.
+  /// - [onRefresh]: The callback to invoke when a refresh is triggered.
+  /// - [child]: The child widget to wrap.
+  const _BloweRefreshWrapper({
+    required this.onRefresh,
+    required this.child,
+    this.onRefreshEnabled = true,
+  });
+
+  /// Indicates if the refresh functionality is enabled.
+  final bool onRefreshEnabled;
+
+  /// The callback to invoke when a refresh is triggered.
+  final Future<void> Function() onRefresh;
+
+  /// The child widget to wrap.
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    if (onRefreshEnabled) {
+      return RefreshIndicator(
+        onRefresh: onRefresh,
+        child: child,
+      );
+    } else {
+      return child;
+    }
+  }
 }
