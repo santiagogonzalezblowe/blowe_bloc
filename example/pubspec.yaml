@@ -9,12 +9,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  blowe_bloc: ^0.2.5
+  blowe_bloc: ^0.2.6
   go_router: ^14.2.0
   # blowe_bloc:
   #   git:
   #     url: https://github.com/santiagogonzalezblowe/blowe_bloc.git
-  #     ref: master
+  #     ref: add-onRefreshEnabled-and-errorBuilder
 
 dev_dependencies:
   flutter_lints: ^4.0.0
