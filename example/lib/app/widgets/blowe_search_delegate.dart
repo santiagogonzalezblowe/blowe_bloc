@@ -18,9 +18,9 @@ typedef BloweSearchEmptyWidgetBuilder = Widget Function(
 );
 
 class BloweSearchDelegate<
-    B extends BlowePaginationBloc<BlowePaginationModel<T>, P>,
-    T,
-    P> extends SearchDelegate<T?> {
+    B extends BloweSearchBloc<T, P>,
+    T extends BloweSerializableItem,
+    P extends BloweSearchParams> extends SearchDelegate<T?> {
   BloweSearchDelegate({
     // super.searchFieldStyle,
     // super.searchFieldDecorationTheme,
@@ -32,12 +32,14 @@ class BloweSearchDelegate<
     super.keyboardType,
     this.initialBuilder,
     this.emptyBuilder,
+    this.historyItemBuilder,
   });
 
   final B bloc;
   final BloweSearchInitialBuilder<T>? initialBuilder;
   final BloweSearchItemBuilder<T> itemBuilder;
   final BloweSearchEmptyWidgetBuilder? emptyBuilder;
+  final BloweSearchItemBuilder<T>? historyItemBuilder;
 
   /// A function that provides parameters for the BloweFetch event.
   final BloweFetchParamsProvider<P> paramsProvider;
@@ -50,6 +52,7 @@ class BloweSearchDelegate<
       IconButton(
         onPressed: () {
           query = '';
+          showSuggestions(context);
         },
         icon: const Icon(Icons.clear),
       ),
@@ -68,31 +71,65 @@ class BloweSearchDelegate<
 
   @override
   Widget buildResults(BuildContext context) {
+    bloc.add(BloweFetch<P>(paramsProvider()));
     return _getBody(context, bloc, initialBuilder);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    return _getBody(context, bloc, initialBuilder);
+    return _getBody(context, bloc, initialBuilder, isSuggestions: true);
   }
 
   Widget _getBody(
-    context,
+    BuildContext context,
     B bloc,
-    BloweSearchInitialBuilder<T>? initialBuilder,
-  ) {
-    return BlocBuilder<B, BloweState>(
+    BloweSearchInitialBuilder<T>? initialBuilder, {
+    bool isSuggestions = false,
+  }) {
+    return BlocBuilder<B, BloweState<BlowePaginationModel<T>>>(
       bloc: bloc,
       builder: (context, state) {
-        if (state is BloweInitial) {
-          if (initialBuilder != null) {
-            return initialBuilder(context, close);
+        if (isSuggestions && query.isEmpty) {
+          final history = state.history?.items ?? [];
+          if (history.isEmpty) {
+            return initialBuilder?.call(context, close) ??
+                const SizedBox.shrink();
           }
-        }
 
-        if (state is BloweInProgress) {
+          return ListView.builder(
+            itemCount: history.length,
+            itemBuilder: (context, index) {
+              final item = history[index];
+              return historyItemBuilder != null
+                  ? historyItemBuilder!(context, item, close)
+                  : ListTile(
+                      title: Text(item.toString()),
+                      onTap: () {
+                        query = item.toString();
+                        showResults(context);
+                      },
+                    );
+            },
+          );
+        }
+        if (state is BloweInProgress<BlowePaginationModel<T>>) {
           return const Center(
             child: CircularProgressIndicator(),
+          );
+        }
+
+        if (state is BloweError<BlowePaginationModel<T>>) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(state.error.toString()),
+              ElevatedButton(
+                onPressed: () {
+                  bloc.add(BloweFetch(paramsProvider()));
+                },
+                child: const Text('Retry'),
+              ),
+            ],
           );
         }
 
@@ -100,9 +137,8 @@ class BloweSearchDelegate<
           final items = state.data.items;
 
           if (items.isEmpty) {
-            return const Center(
-              child: Text('No results found'),
-            );
+            return emptyBuilder?.call(context, query) ??
+                const Center(child: Text('No results found'));
           }
 
           return BlowePaginationListView<B, T, P, void>(

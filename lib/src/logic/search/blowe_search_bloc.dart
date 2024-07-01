@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'package:blowe_bloc/blowe_bloc.dart';
-import 'package:blowe_bloc/src/logic/search/blowe_search_event.dart';
-import 'package:blowe_bloc/src/model/blowe_serializable_item.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// BloweSearchBloc extends BlowePaginationBloc and provides a structure
@@ -9,7 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// This bloc supports loading, adding, removing, and clearing search history,
 /// which is persisted using SharedPreferences.
-abstract class BloweSearchBloc<T extends BloweSerializableItem, P>
+abstract class BloweSearchBloc<T extends BloweSerializableItem,
+        P extends BloweSearchParams>
     extends BlowePaginationBloc<BlowePaginationModel<T>, P> {
   /// Creates an instance of BloweSearchBloc.
   ///
@@ -86,7 +85,7 @@ abstract class BloweSearchBloc<T extends BloweSerializableItem, P>
 
   /// Handles removing an item from the search history.
   ///
-  /// This method is called when the BloweRemoveSearchHistory event is added.
+  /// This method is called cuando the BloweRemoveSearchHistory event is added.
   Future<void> _onRemoveSearchHistory(
     BloweRemoveSearchHistory<T> event,
     Emitter<BloweState<BlowePaginationModel<T>>> emit,
@@ -98,7 +97,7 @@ abstract class BloweSearchBloc<T extends BloweSerializableItem, P>
 
   /// Handles clearing the search history.
   ///
-  /// This method is called when the BloweClearSearchHistory event is added.
+  /// This method is called cuando the BloweClearSearchHistory event is added.
   Future<void> _onClearSearchHistory(
     BloweClearSearchHistory event,
     Emitter<BloweState<BlowePaginationModel<T>>> emit,

@@ -49,6 +49,7 @@ export './src/logic/search/blowe_search_event.dart';
 // Models
 export './src/model/blowe_no_params.dart';
 export './src/model/blowe_pagination_model.dart';
+export './src/model/blowe_search_params.dart';
 export './src/model/blowe_serializable_item.dart';
 // Widgets
 export './src/widget/blowe_bloc_button.dart';
