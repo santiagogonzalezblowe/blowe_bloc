@@ -7,7 +7,9 @@ abstract class BloweSerializableItem extends Equatable {
   Map<String, dynamic> toJson();
 
   /// Creates an instance of the implementing class from a JSON-compatible map.
-  BloweSerializableItem fromJson(Map<String, dynamic> json);
+  static BloweSerializableItem fromJson(Map<String, dynamic> json) {
+    throw UnimplementedError('Implement fromJson in the subclass');
+  }
 
   @override
   List<Object?> get props => [];
