@@ -16,8 +16,7 @@ class BookModel extends BloweSerializableItem {
   final Genre genre;
   final bool available;
 
-  @override
-  BookModel fromJson(Map<String, dynamic> json) {
+  factory BookModel.fromJson(Map<String, dynamic> json) {
     return BookModel(
       title: json['title'] as String,
       author: json['author'] as String,
@@ -37,4 +36,7 @@ class BookModel extends BloweSerializableItem {
       'available': available,
     };
   }
+
+  @override
+  List<Object?> get props => [title, author, description, genre, available];
 }
