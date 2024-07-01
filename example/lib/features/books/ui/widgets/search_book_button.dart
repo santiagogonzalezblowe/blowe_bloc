@@ -23,6 +23,14 @@ class SearchBookButton extends StatelessWidget {
               book: item,
               onTap: () => close(context, item),
             ),
+            emptyBuilder: (context, query) {
+              return Center(
+                child: Text(
+                  'No books found for query: $query',
+                  style: Theme.of(context).textTheme.bodySmall,
+                ),
+              );
+            },
             bloc: context.read<BooksBloc>(),
             initialBuilder: (context, close) {
               final books = [

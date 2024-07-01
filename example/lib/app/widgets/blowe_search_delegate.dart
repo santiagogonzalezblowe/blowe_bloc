@@ -1,6 +1,10 @@
 import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:flutter/material.dart';
 
+//TODO: Create BloweSearchBloc???
+//History feature? (recent searches)
+//Clear search history
+
 typedef BloweSearchInitialBuilder<T> = Widget Function(
   BuildContext context,
   void Function(BuildContext context, T? result) close,
@@ -10,6 +14,11 @@ typedef BloweSearchItemBuilder<T> = Widget Function(
   BuildContext context,
   T item,
   void Function(BuildContext context, T? result) close,
+);
+
+typedef BloweSearchEmptyWidgetBuilder = Widget Function(
+  BuildContext context,
+  String query,
 );
 
 class BloweSearchDelegate<B extends BlowePaginationBloc<dynamic, P>, T, P>
@@ -24,11 +33,13 @@ class BloweSearchDelegate<B extends BlowePaginationBloc<dynamic, P>, T, P>
     super.searchFieldLabel,
     super.keyboardType,
     this.initialBuilder,
+    this.emptyBuilder,
   });
 
   final B bloc;
   final BloweSearchInitialBuilder<T>? initialBuilder;
   final BloweSearchItemBuilder<T> itemBuilder;
+  final BloweSearchEmptyWidgetBuilder? emptyBuilder;
 
   /// A function that provides parameters for the BloweFetch event.
   final BloweFetchParamsProvider<P> paramsProvider;
@@ -98,10 +109,9 @@ class BloweSearchDelegate<B extends BlowePaginationBloc<dynamic, P>, T, P>
 
           return BlowePaginationListView<B, T, P, void>(
             bloc: bloc,
-            itemBuilder: (context, item) {
-              return itemBuilder(context, item, close);
-            },
+            itemBuilder: (context, item) => itemBuilder(context, item, close),
             paramsProvider: paramsProvider,
+            emptyWidget: emptyBuilder?.call(context, query),
           );
         }
 

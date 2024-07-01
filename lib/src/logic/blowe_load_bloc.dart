@@ -16,9 +16,9 @@ abstract class BloweLoadBloc<T, P> extends BloweBloc<T, P> {
   @override
   Future<void> onFetch(
     BloweFetch<P> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) async {
-    emit(BloweInProgress());
+    emit(BloweInProgress<T>());
 
     try {
       final data = await load(event.params!);

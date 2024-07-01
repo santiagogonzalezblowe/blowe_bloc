@@ -20,9 +20,9 @@ abstract class BloweWatchBloc<T, P> extends BloweBloc<T, P> {
   @override
   Future<void> onFetch(
     BloweFetch<P> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) async {
-    emit(BloweInProgress());
+    emit(BloweInProgress<T>());
 
     await _streamSubscription?.cancel();
 
@@ -54,8 +54,8 @@ abstract class BloweWatchBloc<T, P> extends BloweBloc<T, P> {
   }
 
   @override
-  void onReset(BloweReset event, Emitter<BloweState> emit) {
-    emit(BloweInitial());
+  void onReset(BloweReset event, Emitter<BloweState<T>> emit) {
+    emit(BloweInitial<T>());
     _streamSubscription?.cancel();
   }
 

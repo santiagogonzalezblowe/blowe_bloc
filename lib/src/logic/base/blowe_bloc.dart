@@ -4,7 +4,7 @@ import 'package:blowe_bloc/blowe_bloc.dart';
 /// for managing specific events and states in the blowe_bloc package.
 /// It provides a structure for handling data fetching, updating, resetting,
 /// and pagination.
-abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState> {
+abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
   /// Creates an instance of BloweBloc.
   ///
   /// If [initialData] is provided, the initial state will be
@@ -14,7 +14,9 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState> {
   /// - [initialData]: Optional initial data to set the state to BloweCompleted.
   BloweBloc([T? initialData])
       : super(
-          initialData != null ? BloweCompleted<T>(initialData) : BloweInitial(),
+          initialData != null
+              ? BloweCompleted<T>(initialData)
+              : BloweInitial<T>(),
         ) {
     on<BloweFetch<P>>(_onFetch);
     on<BloweUpdateData<T>>(_onUpdateData);
@@ -29,12 +31,12 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState> {
   /// - [emit]: The function to emit states.
   Future<void> onFetch(
     BloweFetch<P> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   );
 
   Future<void> _onFetch(
     BloweFetch<P> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) {
     if (event.params == null && P != BloweNoParams) {
       throw Exception('Params cannot be null');
@@ -51,13 +53,13 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState> {
   /// - [emit]: The function to emit states.
   Future<void> onFetchMore(
     BloweFetchMore<P> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) =>
       throw UnimplementedError();
 
   Future<void> _onFetchMore(
     BloweFetchMore<P> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) {
     if (event.params == null && P != BloweNoParams) {
       throw Exception('Params cannot be null');
@@ -68,7 +70,7 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState> {
 
   void _onUpdateData(
     BloweUpdateData<T> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) =>
       emit(BloweCompleted<T>(event.data));
 
@@ -79,7 +81,7 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState> {
   /// - [emit]: The function to emit states.
   void onReset(
     BloweReset event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) =>
-      emit(BloweInitial());
+      emit(BloweInitial<T>());
 }

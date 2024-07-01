@@ -42,7 +42,10 @@ typedef BlowePaginationErrorBuilder = Widget Function(
 /// A widget that displays a paginated list of items using a
 /// BlowePaginationBloc.
 /// It handles loading, error, and completed states of the BlowePaginationBloc.
-class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
+class BlowePaginationListView<
+    B extends BlowePaginationBloc<BlowePaginationModel<T>, P>,
+    T,
+    P,
     G> extends StatelessWidget {
   /// Creates an instance of BlowePaginationListView.
   ///
@@ -107,16 +110,16 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<B, BloweState>(
+    return BlocBuilder<B, BloweState<BlowePaginationModel<T>>>(
       bloc: bloc,
       builder: (context, state) {
-        if (state is BloweInProgress) {
+        if (state is BloweInProgress<BlowePaginationModel<T>>) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
-        if (state is BloweError) {
+        if (state is BloweError<BlowePaginationModel<T>>) {
           if (errorBuilder != null) return errorBuilder!(context, state.error);
 
           return Column(
@@ -175,8 +178,11 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
   }
 }
 
-class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
-    T, P, G> extends StatefulWidget {
+class _BlowePaginationListViewLoaded<
+    B extends BlowePaginationBloc<BlowePaginationModel<T>, P>,
+    T,
+    P,
+    G> extends StatefulWidget {
   /// Creates an instance of _BlowePaginationListViewLoaded.
   ///
   /// - [data]: The data for the list view.
@@ -237,7 +243,7 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
 }
 
 class __BlowePaginationListViewStateLoaded<
-    B extends BlowePaginationBloc<dynamic, P>,
+    B extends BlowePaginationBloc<BlowePaginationModel<T>, P>,
     T,
     P,
     G> extends State<_BlowePaginationListViewLoaded<B, T, P, G>> {

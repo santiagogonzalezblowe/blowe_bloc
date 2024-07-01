@@ -21,11 +21,11 @@ abstract class BlowePaginationBloc<T extends BlowePaginationModel<dynamic>, P>
   @override
   Future<void> onFetch(
     BloweFetch<P> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) async {
     _page = 0;
 
-    emit(BloweInProgress());
+    emit(BloweInProgress<T>());
 
     try {
       final data = await load(event.params!, _page);
@@ -42,7 +42,7 @@ abstract class BlowePaginationBloc<T extends BlowePaginationModel<dynamic>, P>
   @override
   Future<void> onFetchMore(
     BloweFetchMore<P> event,
-    Emitter<BloweState> emit,
+    Emitter<BloweState<T>> emit,
   ) async {
     final state = this.state;
     if (state is! BloweCompleted<T>) return;
