@@ -1,10 +1,6 @@
 import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:flutter/material.dart';
 
-//TODO: Create BloweSearchBloc???
-//History feature? (recent searches)
-//Clear search history
-
 typedef BloweSearchInitialBuilder<T> = Widget Function(
   BuildContext context,
   void Function(BuildContext context, T? result) close,
@@ -21,8 +17,10 @@ typedef BloweSearchEmptyWidgetBuilder = Widget Function(
   String query,
 );
 
-class BloweSearchDelegate<B extends BlowePaginationBloc<dynamic, P>, T, P>
-    extends SearchDelegate<T?> {
+class BloweSearchDelegate<
+    B extends BlowePaginationBloc<BlowePaginationModel<T>, P>,
+    T,
+    P> extends SearchDelegate<T?> {
   BloweSearchDelegate({
     // super.searchFieldStyle,
     // super.searchFieldDecorationTheme,

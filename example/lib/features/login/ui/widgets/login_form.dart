@@ -31,7 +31,7 @@ class _LoginFormState extends State<LoginForm> {
       child: ListView(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
-          BloweBlocSelector<LoginBloc>(
+          BloweBlocSelector<LoginBloc, void>(
             builder: (context, enabled) => EmailTextFormField(
               controller: _emailController,
               enabled: enabled,
@@ -39,7 +39,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 16),
-          BloweBlocSelector<LoginBloc>(
+          BloweBlocSelector<LoginBloc, void>(
             builder: (context, enabled) => PasswordTextFormField(
               controller: _passwordController,
               enabled: enabled,
@@ -47,21 +47,21 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 16),
-          BloweBlocSelector<LoginBloc>(
+          BloweBlocSelector<LoginBloc, void>(
             builder: (context, enabled) => TermsSwitchFormListTile(
               controller: _aceptTerms,
               enabled: enabled,
             ),
           ),
           const SizedBox(height: 16),
-          BloweBlocSelector<LoginBloc>(
+          BloweBlocSelector<LoginBloc, void>(
             builder: (context, enabled) => ReadingFrequencyRadiusForm(
               controller: _readingFrequency,
               enabled: enabled,
             ),
           ),
           const SizedBox(height: 16),
-          BloweBlocSelector<LoginBloc>(
+          BloweBlocSelector<LoginBloc, void>(
             builder: (context, enabled) => GenreDropdownButtonFormField(
               value: _selectedGenre,
               enabled: enabled,
@@ -69,7 +69,7 @@ class _LoginFormState extends State<LoginForm> {
             ),
           ),
           const SizedBox(height: 16),
-          BloweBlocButton<LoginBloc, ElevatedButton>(
+          BloweBlocButton<LoginBloc, ElevatedButton, void>(
             text: 'Sign in',
             onPressed: () {
               if (!_formKey.currentState!.validate()) return;
