@@ -36,7 +36,7 @@ abstract class BloweSearchBloc<T extends BloweSerializableItem,
     if (historyJsonList != null) {
       _historyItems = historyJsonList.map((json) {
         final map = jsonDecode(json) as Map<String, dynamic>;
-        return _createItemFromJson(map);
+        return fromJson(map);
       }).toList();
     }
   }
@@ -54,11 +54,18 @@ abstract class BloweSearchBloc<T extends BloweSerializableItem,
   /// SharedPreferences.
   String get _getHistoryKey => '${runtimeType}_search_history';
 
-  /// Creates an item from JSON.
+  /// Method to create an item from JSON.
   ///
   /// This method needs to be implemented by subclasses to handle the creation
   /// of T from a JSON map.
-  T _createItemFromJson(Map<String, dynamic> json);
+  T fromJson(Map<String, dynamic> json);
+
+  /// Method to load data based on search parameters.
+  ///
+  /// This method needs to be implemented by subclasses to handle the loading
+  /// of paginated data based on search parameters.
+  @override
+  Future<BlowePaginationModel<T>> load(P params, int page);
 
   /// Handles loading the search history.
   ///
@@ -85,7 +92,7 @@ abstract class BloweSearchBloc<T extends BloweSerializableItem,
 
   /// Handles removing an item from the search history.
   ///
-  /// This method is called cuando the BloweRemoveSearchHistory event is added.
+  /// This method is called when the BloweRemoveSearchHistory event is added.
   Future<void> _onRemoveSearchHistory(
     BloweRemoveSearchHistory<T> event,
     Emitter<BloweState<BlowePaginationModel<T>>> emit,
@@ -97,7 +104,7 @@ abstract class BloweSearchBloc<T extends BloweSerializableItem,
 
   /// Handles clearing the search history.
   ///
-  /// This method is called cuando the BloweClearSearchHistory event is added.
+  /// This method is called when the BloweClearSearchHistory event is added.
   Future<void> _onClearSearchHistory(
     BloweClearSearchHistory event,
     Emitter<BloweState<BlowePaginationModel<T>>> emit,

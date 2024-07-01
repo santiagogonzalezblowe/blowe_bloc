@@ -8,6 +8,7 @@ class BookRepository {
   final BookService bookService;
 
   BooksPaginationModel? _books;
+  BooksPaginationModel? _searchBooks;
 
   Future<BookModel> loadRandomBook() => bookService.loadRandomBook();
 
@@ -18,11 +19,23 @@ class BookRepository {
 
     if (page != 0) {
       final items = _books?.items ?? [];
-
       books.items.insertAll(0, items);
     }
 
     _books = books;
+
+    return books;
+  }
+
+  Future<BooksPaginationModel> loadBooksByQuery(int page, String query) async {
+    final books = await bookService.loadBooksByQuery(page, query);
+
+    if (page != 0) {
+      final items = _searchBooks?.items ?? [];
+      books.items.insertAll(0, items);
+    }
+
+    _searchBooks = books;
 
     return books;
   }
