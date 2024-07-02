@@ -2,11 +2,21 @@ import 'dart:async';
 import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:flutter/material.dart';
 
+/// A typedef for the initial builder function used in BloweSearchDelegate.
+///
+/// - [context]: The BuildContext of the widget.
+/// - [close]: A function to close the search delegate with a result.
 typedef BloweSearchInitialBuilder<T> = Widget Function(
   BuildContext context,
   void Function(BuildContext context, T? result) close,
 );
 
+/// A typedef for the item builder function used in BloweSearchDelegate.
+///
+/// - [context]: The BuildContext of the widget.
+/// - [item]: The item to build a widget for.
+/// - [close]: A function to close the search delegate with a result.
+/// - [save]: A function to save the selected item to the search history.
 typedef BloweSearchItemBuilder<T> = Widget Function(
   BuildContext context,
   T item,
@@ -14,17 +24,43 @@ typedef BloweSearchItemBuilder<T> = Widget Function(
   void Function(T item) save,
 );
 
+/// A typedef for the empty widget builder function used in BloweSearchDelegate.
+///
+/// - [context]: The BuildContext of the widget.
+/// - [query]: The search query.
 typedef BloweSearchEmptyWidgetBuilder = Widget Function(
   BuildContext context,
   String query,
 );
 
+/// A typedef for the params provider function used in BloweSearchDelegate.
+///
+/// - [query]: The search query.
 typedef BloweSearchParamsProvider<P> = P Function(String query);
 
+/// A delegate for searching with automatic history management and
+/// debounce support.
+///
+/// This delegate uses a BloweSearchBloc to handle the search state and history.
+/// It provides suggestions based on the search query and shows search results
+/// when the user submits a query.
 class BloweSearchDelegate<
     B extends BloweSearchBloc<T, P>,
     T extends BloweSerializableItem,
     P extends BloweSearchParams> extends SearchDelegate<T?> {
+  /// Creates an instance of BloweSearchDelegate.
+  ///
+  /// - [bloc]: The search bloc to use for managing search state and history.
+  /// - [itemBuilder]: The builder function to create list items.
+  /// - [paramsProvider]: A function that provides parameters for the BloweFetch
+  /// event.
+  /// - [searchFieldLabel]: The label for the search field (optional).
+  /// - [keyboardType]: The type of keyboard to use for the search field
+  /// (optional).
+  /// - [initialBuilder]: A builder function for the initial state when the
+  /// search query is empty (optional).
+  /// - [emptyBuilder]: A builder function for the empty state when no results
+  /// are found (optional).
   BloweSearchDelegate({
     required this.bloc,
     required this.itemBuilder,
@@ -35,10 +71,19 @@ class BloweSearchDelegate<
     this.emptyBuilder,
   }) : _debouncer = _Debouncer(milliseconds: 300);
 
+  /// The search bloc to use for managing search state and history.
   final B bloc;
+
+  /// A builder function for the initial state when the search query is empty.
   final BloweSearchInitialBuilder<T>? initialBuilder;
+
+  /// A builder function to create list items.
   final BloweSearchItemBuilder<T> itemBuilder;
+
+  /// A builder function for the empty state when no results are found.
   final BloweSearchEmptyWidgetBuilder? emptyBuilder;
+
+  /// A debouncer to prevent excessive search requests.
   final _Debouncer _debouncer;
 
   /// A function that provides parameters for the BloweFetch event.
@@ -180,6 +225,7 @@ class BloweSearchDelegate<
   }
 }
 
+/// A class to debounce user input to prevent excessive search requests.
 class _Debouncer {
   _Debouncer({required this.milliseconds});
 

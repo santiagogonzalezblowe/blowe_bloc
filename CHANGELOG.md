@@ -1,3 +1,24 @@
+## 0.3.0
+
+### New Features
+
+- **BloweSearchBloc**: A new bloc for handling paginated data along with managing a search history.
+- **BloweSearchEvent**: Events specific to the BloweSearchBloc including adding, removing, and clearing search history.
+- **BloweSearchDelegate**: A new delegate for searching with automatic history management and debounce support.
+- **BloweSerializableItem**: A base class requiring implementing classes to have a `toJson` method for serialization.
+- **BloweSearchParams**: A base class for search parameters that includes a `query` field.
+
+### Improvements
+
+- **BlowePaginationListView**:
+  - Now only triggers `loadMore` when scrolling down.
+  - Added the `shrinkWrap` property to optionally wrap the list view's contents.
+
+### Example Application
+
+- **Example Application Update**: Added a new example in the `example` app demonstrating the usage of `BloweSearchBloc` and `BloweSearchDelegate`.
+  - The example includes setup for `BookSearchBloc` and integration with `BloweSearchDelegate` to showcase search functionality with history management and debounce.
+
 ## 0.2.6
 
 ### New Features
