@@ -27,11 +27,6 @@ class SearchBookButton extends StatelessWidget {
               );
             },
             paramsProvider: (query) => BookSearchParams(query),
-            // initialBuilder: (context, close) {
-            //   return const Center(
-            //     child: Text('Search for books'),
-            //   );
-            // },
             emptyBuilder: (context, query) {
               return Center(
                 child: Text('No results found for "$query"'),
