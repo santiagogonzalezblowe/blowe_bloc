@@ -1,6 +1,5 @@
 import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:example/app/services/book/models/book_model.dart';
-import '../../../../../../lib/src/widget/search/blowe_search_delegate.dart';
 import 'package:example/features/books/logic/book_search_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -18,10 +17,13 @@ class SearchBookButton extends StatelessWidget {
           delegate:
               BloweSearchDelegate<BookSearchBloc, BookModel, BookSearchParams>(
             bloc: context.read<BookSearchBloc>(),
-            itemBuilder: (context, item, close) {
+            itemBuilder: (context, item, close, save) {
               return ListTile(
                 title: Text(item.title),
-                onTap: () => close(context, item),
+                onTap: () {
+                  save(item);
+                  close(context, item);
+                },
               );
             },
             paramsProvider: (query) => BookSearchParams(query),
@@ -33,12 +35,6 @@ class SearchBookButton extends StatelessWidget {
             emptyBuilder: (context, query) {
               return Center(
                 child: Text('No results found for "$query"'),
-              );
-            },
-            historyItemBuilder: (context, item, close) {
-              return ListTile(
-                title: Text(item.title),
-                onTap: () => close(context, item),
               );
             },
           ),

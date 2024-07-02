@@ -1,5 +1,6 @@
 import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 /// Typedef for a widget builder function used by BlowePaginationListView.
 ///
@@ -263,19 +264,25 @@ class __BlowePaginationListViewStateLoaded<
     _scrollController = ScrollController()
       ..addListener(
         () {
+          final currentOffset = _scrollController.position.pixels;
+          final scrollDirection =
+              _scrollController.position.userScrollDirection;
+          final maxScrollExtent = _scrollController.position.maxScrollExtent;
+
           if (widget.isLoadingMore ||
               widget.data.totalCount == widget.data.items.length) {
             return;
           }
 
-          if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200) {
-            if (widget.bloc != null) {
-              widget.bloc!.add(BloweFetchMore(widget.paramsProvider()));
-            } else {
-              context.read<B>().add(
-                    BloweFetchMore(widget.paramsProvider()),
-                  );
+          if (scrollDirection == ScrollDirection.reverse) {
+            if (currentOffset >= maxScrollExtent - 200) {
+              if (widget.bloc != null) {
+                widget.bloc!.add(BloweFetchMore(widget.paramsProvider()));
+              } else {
+                context.read<B>().add(
+                      BloweFetchMore(widget.paramsProvider()),
+                    );
+              }
             }
           }
         },
