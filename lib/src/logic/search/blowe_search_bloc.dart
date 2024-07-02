@@ -85,7 +85,9 @@ abstract class BloweSearchBloc<T extends BloweSerializableItem,
     BloweAddSearchHistory<T> event,
     Emitter<BloweState<BlowePaginationModel<T>>> emit,
   ) async {
-    _historyItems.add(event.item);
+    _historyItems
+      ..removeWhere((item) => item == event.item)
+      ..add(event.item);
     await _saveHistory();
     emit(_getUpdatedState(state));
   }
