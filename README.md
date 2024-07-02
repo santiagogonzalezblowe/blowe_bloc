@@ -6,12 +6,17 @@
 
 `blowe_bloc` is an advanced Flutter package for state management and business logic components, extending `flutter_bloc`. It provides a comprehensive set of tools to streamline the development of complex applications with clear separation of concerns, efficient state management, and enhanced UI components. By leveraging the powerful BLoC pattern, `blowe_bloc` ensures your app's logic is both scalable and maintainable.
 
+In addition to the core state management features, `blowe_bloc` now includes advanced search capabilities and history management, making it easier to implement robust search functionalities in your Flutter applications.
+
 ---
 
 ## Features
 
 - **Advanced BLoC Components**: Includes specialized BLoCs for handling data loading, pagination, and data watching. Each BLoC is designed to emit specific states (`BloweInProgress`, `BloweCompleted`, `BloweError`) for better state management.
-- **Comprehensive Models**: Models such as `BloweNoParams` for operations requiring no parameters and `BlowePaginationModel` for managing paginated data. These models integrate seamlessly with the BLoCs to handle various data scenarios.
+
+- **Advanced Search Functionality**: New `BloweSearchBloc` and `BloweSearchDelegate` components for implementing robust search capabilities with automatic history management and debouncing support.
+
+- **Comprehensive Models**: Models such as `BloweNoParams` for operations requiring no parameters, `BlowePaginationModel` for managing paginated data, `BloweSerializableItem` for serializable items, and `BloweSearchParams` for search parameter handling. These models integrate seamlessly with the BLoCs to handle various data scenarios.
 
 - **Reactive Widgets**: A variety of widgets including `BloweBlocButton`, `BloweBlocListener`, `BloweBlocSelector`, `BloweMultiBlocSelector`, `BlowePaginationListView`, and form fields like `BloweTextFormField`, `BloweDropdownButtonFormField`, `BloweBoolFormListTile`, and `BloweRadiusForm`. These widgets are designed to react to state changes efficiently.
 
@@ -20,6 +25,63 @@
 - **Seamless Integration**: Built on top of `flutter_bloc` for easy integration into your existing Flutter projects. The package ensures minimal boilerplate while offering maximum functionality and flexibility.
 
 - **Error Handling**: Enhanced error handling across all BLoCs and widgets, providing robust feedback mechanisms and state recovery options.
+
+## Blowe Search
+
+`blowe_bloc` introduces powerful search capabilities with the new `BloweSearchBloc` and `BloweSearchDelegate`. These components provide a robust solution for implementing search functionalities in your Flutter applications with ease.
+
+### BloweSearchBloc
+
+`BloweSearchBloc` extends the `BlowePaginationBloc` to manage search operations, including the ability to add, remove, and clear search history. It uses `SharedPreferences` to persist the search history, allowing for a seamless user experience.
+
+#### Example
+
+```dart
+class BookSearchBloc extends BloweSearchBloc<BookModel, BookSearchParams> {
+  @override
+  Future<BlowePaginationModel<BookModel>> load(BookSearchParams params, int page) {
+    // Implement the search logic here
+  }
+
+  @override
+  BookModel fromJson(Map<String, dynamic> json) {
+    return BookModel.fromJson(json);
+  }
+}
+```
+
+### BloweSearchDelegate
+
+`BloweSearchDelegate` integrates with `BloweSearchBloc` to handle the UI aspect of search functionalities. It provides automatic history management, debouncing support, and a customizable search experience.
+
+#### Example
+
+```dart
+class BookSearchDelegate extends BloweSearchDelegate<BookSearchBloc,BookModel, BookSearchParams> {
+  BookSearchDelegate(BookSearchBloc bloc)
+      : super(
+          bloc: bloc,
+          itemBuilder: (context, item, close, save) {
+            return ListTile(
+              title: Text(item.title),
+              onTap: () {
+                save(item); // Save to history
+                close(context, item); // Close the delegate with the selected item
+              },
+            );
+          },
+          paramsProvider: (query) => BookSearchParams(query),
+        );
+}
+```
+
+### Key Features
+
+- **Automatic History Management**: The `BloweSearchBloc` handles adding, removing, and clearing search history, ensuring a user-friendly experience.
+- **Debouncing Support**: The `BloweSearchDelegate` includes a debouncer to manage search queries efficiently, reducing unnecessary load on the backend.
+- **Customizable Search Experience**: The search delegate and bloc can be customized to fit the specific needs of your application, providing flexibility in how search results are displayed and managed.
+
+By leveraging these new search components, you can enhance your Flutter applications with advanced search functionalities that are both powerful and easy to integrate.
 
 ## Blowe Logic
 

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 ///
 /// - [context]: The BuildContext of the widget.
 /// - [state]: The state of the BloweBloc.
-typedef BloweBlocWidgetListener<S extends BloweState> = void Function(
+typedef BloweBlocWidgetListener<T, S extends BloweState<T>> = void Function(
   BuildContext context,
   S state,
 );
@@ -13,7 +13,7 @@ typedef BloweBlocWidgetListener<S extends BloweState> = void Function(
 /// A widget that listens to the state changes of a BloweBloc and triggers
 /// the corresponding callback functions for each state type.
 class BloweBlocListener<B extends BloweBloc<T, dynamic>, T>
-    extends BlocListenerBase<B, BloweState> {
+    extends BlocListenerBase<B, BloweState<T>> {
   /// Creates an instance of BloweBlocListener.
   ///
   /// - [key]: Optional key for the widget.
@@ -25,16 +25,16 @@ class BloweBlocListener<B extends BloweBloc<T, dynamic>, T>
   BloweBlocListener({
     super.key,
     super.child,
-    BloweBlocWidgetListener<BloweCompleted<T>>? onCompleted,
-    BloweBlocWidgetListener<BloweError>? onError,
-    BloweBlocWidgetListener<BloweInProgress>? onLoading,
-    BloweBlocWidgetListener<BloweInitial>? onInitial,
+    BloweBlocWidgetListener<T, BloweCompleted<T>>? onCompleted,
+    BloweBlocWidgetListener<T, BloweError<T>>? onError,
+    BloweBlocWidgetListener<T, BloweInProgress<T>>? onLoading,
+    BloweBlocWidgetListener<T, BloweInitial<T>>? onInitial,
   }) : super(
           listener: (context, state) {
             if (state is BloweCompleted<T>) onCompleted?.call(context, state);
-            if (state is BloweError) onError?.call(context, state);
-            if (state is BloweInProgress) onLoading?.call(context, state);
-            if (state is BloweInitial) onInitial?.call(context, state);
+            if (state is BloweError<T>) onError?.call(context, state);
+            if (state is BloweInProgress<T>) onLoading?.call(context, state);
+            if (state is BloweInitial<T>) onInitial?.call(context, state);
           },
         );
 }

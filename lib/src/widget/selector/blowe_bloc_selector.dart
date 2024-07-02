@@ -13,7 +13,7 @@ typedef BloweBlocWidgetSelectorBuilder = Widget Function(
 /// A widget that uses a BlocSelector to determine if the widget
 /// should be enabled.
 /// It rebuilds based on the state of the specified BloweBloc.
-class BloweBlocSelector<T extends BloweBloc<dynamic, dynamic>>
+class BloweBlocSelector<B extends BloweBloc<T, dynamic>, T>
     extends StatelessWidget {
   /// Creates an instance of BloweBlocSelector.
   ///
@@ -28,7 +28,7 @@ class BloweBlocSelector<T extends BloweBloc<dynamic, dynamic>>
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<T, BloweState, bool>(
+    return BlocSelector<B, BloweState<T>, bool>(
       selector: (state) => state is! BloweInProgress,
       builder: builder,
     );

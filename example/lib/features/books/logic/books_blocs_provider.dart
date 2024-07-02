@@ -1,5 +1,6 @@
 import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:example/app/repositories/book/book_repository.dart';
+import 'package:example/features/books/logic/book_search_bloc.dart';
 import 'package:example/features/books/logic/books_bloc.dart';
 import 'package:example/features/books/logic/cubit/books_filter_cubit.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,11 @@ class BooksBlocsProvider extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => BooksFilterCubit(),
+        ),
+        BlocProvider(
+          create: (context) => BookSearchBloc(
+            context.read<BookRepository>(),
+          ),
         ),
       ],
       child: child,

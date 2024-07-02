@@ -16,14 +16,10 @@ class BooksListView extends StatelessWidget {
       builder: (context, showAvailables) {
         return BlowePaginationListView<BooksBloc, BookModel, BloweNoParams,
             Genre>(
-          itemBuilder: (context, item) {
-            return BookCard(book: item);
-          },
+          itemBuilder: (context, item) => BookCard(book: item),
           filter: (item) => showAvailables ? item.available : !item.available,
           paramsProvider: () => const BloweNoParams(),
-          emptyWidget: const Center(
-            child: Text('No books found'),
-          ),
+          emptyWidget: const Center(child: Text('No books found')),
           groupBy: (item) => item.genre,
           groupHeaderBuilder: (context, group, items) {
             return Padding(

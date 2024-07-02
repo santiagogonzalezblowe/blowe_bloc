@@ -44,9 +44,13 @@ export './src/logic/base/blowe_state.dart';
 export './src/logic/blowe_load_bloc.dart';
 export './src/logic/blowe_pagination_bloc.dart';
 export './src/logic/blowe_watch_bloc.dart';
+export './src/logic/search/blowe_search_bloc.dart';
+export './src/logic/search/blowe_search_event.dart';
 // Models
 export './src/model/blowe_no_params.dart';
 export './src/model/blowe_pagination_model.dart';
+export './src/model/blowe_search_params.dart';
+export './src/model/blowe_serializable_item.dart';
 // Widgets
 export './src/widget/blowe_bloc_button.dart';
 export './src/widget/blowe_bloc_listener.dart';
@@ -56,5 +60,6 @@ export './src/widget/form/blowe_dropdown_button_form_field.dart';
 export './src/widget/form/blowe_form_error_text.dart';
 export './src/widget/form/blowe_radius_form.dart';
 export './src/widget/form/blowe_text_form_field.dart';
+export './src/widget/search/blowe_search_delegate.dart';
 export './src/widget/selector/blowe_bloc_selector.dart';
 export './src/widget/selector/blowe_multi_bloc_selector.dart';

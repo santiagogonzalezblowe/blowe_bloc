@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 /// A button widget that uses a BloweBloc to determine if the
 /// button should be enabled.
 /// It rebuilds based on the state of the specified BloweBloc.
-class BloweBlocButton<T extends BloweBloc<dynamic, dynamic>,
-    B extends ButtonStyleButton> extends StatelessWidget {
+class BloweBlocButton<B extends BloweBloc<T, dynamic>,
+    N extends ButtonStyleButton, T> extends StatelessWidget {
   /// Creates an instance of BloweBlocButton.
   ///
   /// - [text]: The text to display on the button.
@@ -24,7 +24,7 @@ class BloweBlocButton<T extends BloweBloc<dynamic, dynamic>,
 
   @override
   Widget build(BuildContext context) {
-    return BloweBlocSelector<T>(builder: _createButton);
+    return BloweBlocSelector<B, T>(builder: _createButton);
   }
 
   /// Creates the button widget based on the type of ButtonStyleButton
@@ -33,7 +33,7 @@ class BloweBlocButton<T extends BloweBloc<dynamic, dynamic>,
   /// - [context]: The BuildContext of the widget.
   /// - [enabled]: Indicates if the button should be enabled.
   ButtonStyleButton _createButton(BuildContext context, bool enabled) {
-    switch (B) {
+    switch (N) {
       case ElevatedButton:
         return ElevatedButton(
           onPressed: enabled ? onPressed : null,

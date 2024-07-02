@@ -33,6 +33,21 @@ class BookService {
       totalCount: _books.length,
     );
   }
+
+  Future<BooksPaginationModel> loadBooksByQuery(int page, String query) async {
+    const pageSize = 10;
+    await Future.delayed(const Duration(seconds: 2));
+    final filteredBooks = _books
+        .where((book) => book.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+    final booksPage =
+        filteredBooks.skip(page * pageSize).take(pageSize).toList();
+
+    return BooksPaginationModel(
+      items: booksPage,
+      totalCount: filteredBooks.length,
+    );
+  }
 }
 
 final _books = <BookModel>[
@@ -274,5 +289,43 @@ final _books = <BookModel>[
     author: 'Franz Kafka',
     genre: Genre.fiction,
     available: false,
+  ),
+  BookModel(
+    title: 'The Stranger',
+    author: 'Albert Camus',
+    description: 'The story',
+    genre: Genre.fiction,
+    available: false,
+  ),
+  BookModel(
+    title: 'The Trial',
+    author: 'Franz Kafka',
+    description: 'The story',
+    genre: Genre.fiction,
+    available: true,
+  ),
+  BookModel(
+    title: 'The Plague',
+    author: 'Albert Camus',
+    description:
+        'A novel that tells the story of a plague sweeping the French Algerian city of Oran.',
+    genre: Genre.fiction,
+    available: true,
+  ),
+  BookModel(
+    title: 'The Master and Margarita',
+    author: 'Mikhail Bulgakov',
+    description:
+        'A novel that blends the supernatural and the mundane in a satirical critique of Soviet society.',
+    genre: Genre.fiction,
+    available: true,
+  ),
+  BookModel(
+    title: 'The Unbearable Lightness of Being',
+    author: 'Milan Kundera',
+    description:
+        'A novel that explores the lives of four characters in the aftermath of the Prague Spring.',
+    genre: Genre.fiction,
+    available: true,
   ),
 ];

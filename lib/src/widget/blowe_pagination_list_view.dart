@@ -1,5 +1,6 @@
 import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 /// Typedef for a widget builder function used by BlowePaginationListView.
 ///
@@ -42,7 +43,10 @@ typedef BlowePaginationErrorBuilder = Widget Function(
 /// A widget that displays a paginated list of items using a
 /// BlowePaginationBloc.
 /// It handles loading, error, and completed states of the BlowePaginationBloc.
-class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
+class BlowePaginationListView<
+    B extends BlowePaginationBloc<BlowePaginationModel<T>, P>,
+    T,
+    P,
     G> extends StatelessWidget {
   /// Creates an instance of BlowePaginationListView.
   ///
@@ -54,6 +58,10 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
   /// - [filter]: Optional function to filter items in the list.
   /// - [groupBy]: Optional function to group items in the list.
   /// - [groupHeaderBuilder]: Optional builder function to create group headers.
+  /// - [errorBuilder]: Optional builder function to create a custom error
+  /// widget.
+  /// - [onRefreshEnabled]: Indicates if the refresh functionality is enabled.
+  /// - [bloc]: The bloc to use for the list view.
   const BlowePaginationListView({
     required this.itemBuilder,
     required this.paramsProvider,
@@ -64,6 +72,8 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
     this.groupHeaderBuilder,
     this.errorBuilder,
     this.onRefreshEnabled = true,
+    this.bloc,
+    this.shrinkWrap = false,
     super.key,
   }) : assert(
           groupBy == null || groupHeaderBuilder != null,
@@ -97,17 +107,24 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
   /// Indicates if the refresh functionality is enabled.
   final bool onRefreshEnabled;
 
+  /// The bloc to use for the list view.
+  final B? bloc;
+
+  /// Indicates if the list view should shrink-wrap its contents.
+  final bool shrinkWrap;
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<B, BloweState>(
+    return BlocBuilder<B, BloweState<BlowePaginationModel<T>>>(
+      bloc: bloc,
       builder: (context, state) {
-        if (state is BloweInProgress) {
+        if (state is BloweInProgress<BlowePaginationModel<T>>) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
-        if (state is BloweError) {
+        if (state is BloweError<BlowePaginationModel<T>>) {
           if (errorBuilder != null) return errorBuilder!(context, state.error);
 
           return Column(
@@ -116,7 +133,11 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
               Text(state.error.toString()),
               ElevatedButton(
                 onPressed: () {
-                  context.read<B>().add(BloweFetch(paramsProvider()));
+                  if (bloc != null) {
+                    bloc!.add(BloweFetch(paramsProvider()));
+                  } else {
+                    context.read<B>().add(BloweFetch(paramsProvider()));
+                  }
                 },
                 child: const Text('Retry'),
               ),
@@ -135,6 +156,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
               padding: padding,
               emptyWidget: emptyWidget!,
               onRefreshEnabled: onRefreshEnabled,
+              bloc: bloc,
             );
           }
 
@@ -151,6 +173,7 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
             groupBy: groupBy,
             groupHeaderBuilder: groupHeaderBuilder,
             onRefreshEnabled: onRefreshEnabled,
+            bloc: bloc,
           );
         }
 
@@ -160,8 +183,11 @@ class BlowePaginationListView<B extends BlowePaginationBloc<dynamic, P>, T, P,
   }
 }
 
-class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
-    T, P, G> extends StatefulWidget {
+class _BlowePaginationListViewLoaded<
+    B extends BlowePaginationBloc<BlowePaginationModel<T>, P>,
+    T,
+    P,
+    G> extends StatefulWidget {
   /// Creates an instance of _BlowePaginationListViewLoaded.
   ///
   /// - [data]: The data for the list view.
@@ -183,6 +209,8 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
     this.groupBy,
     this.groupHeaderBuilder,
     this.onRefreshEnabled = true,
+    this.bloc,
+    this.shrinkWrap = false,
   });
 
   /// The data for the list view.
@@ -212,13 +240,19 @@ class _BlowePaginationListViewLoaded<B extends BlowePaginationBloc<dynamic, P>,
   /// Indicates if the refresh functionality is enabled.
   final bool onRefreshEnabled;
 
+  /// The bloc to use for the list view.
+  final B? bloc;
+
+  /// Indicates if the list view should shrink-wrap its contents.
+  final bool shrinkWrap;
+
   @override
   State<_BlowePaginationListViewLoaded<B, T, P, G>> createState() =>
       __BlowePaginationListViewStateLoaded<B, T, P, G>();
 }
 
 class __BlowePaginationListViewStateLoaded<
-    B extends BlowePaginationBloc<dynamic, P>,
+    B extends BlowePaginationBloc<BlowePaginationModel<T>, P>,
     T,
     P,
     G> extends State<_BlowePaginationListViewLoaded<B, T, P, G>> {
@@ -230,16 +264,26 @@ class __BlowePaginationListViewStateLoaded<
     _scrollController = ScrollController()
       ..addListener(
         () {
+          final currentOffset = _scrollController.position.pixels;
+          final scrollDirection =
+              _scrollController.position.userScrollDirection;
+          final maxScrollExtent = _scrollController.position.maxScrollExtent;
+
           if (widget.isLoadingMore ||
               widget.data.totalCount == widget.data.items.length) {
             return;
           }
 
-          if (_scrollController.position.pixels >=
-              _scrollController.position.maxScrollExtent - 200) {
-            context.read<B>().add(
-                  BloweFetchMore(widget.paramsProvider()),
-                );
+          if (scrollDirection == ScrollDirection.reverse) {
+            if (currentOffset >= maxScrollExtent - 200) {
+              if (widget.bloc != null) {
+                widget.bloc!.add(BloweFetchMore(widget.paramsProvider()));
+              } else {
+                context.read<B>().add(
+                      BloweFetchMore(widget.paramsProvider()),
+                    );
+              }
+            }
           }
         },
       );
@@ -256,12 +300,17 @@ class __BlowePaginationListViewStateLoaded<
     return _BloweRefreshWrapper(
       onRefreshEnabled: widget.onRefreshEnabled,
       onRefresh: () async {
-        context.read<B>().add(BloweFetch(widget.paramsProvider()));
+        if (widget.bloc != null) {
+          widget.bloc!.add(BloweFetch(widget.paramsProvider()));
+        } else {
+          context.read<B>().add(BloweFetch(widget.paramsProvider()));
+        }
       },
       child: ListView.builder(
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
+        shrinkWrap: widget.shrinkWrap,
         padding: widget.padding,
         controller: _scrollController,
         itemCount: _getItemCount(),
@@ -339,6 +388,8 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
     required this.emptyWidget,
     this.padding,
     this.onRefreshEnabled = true,
+    this.bloc,
+    this.shrinkWrap = false,
     super.key,
   });
 
@@ -354,16 +405,27 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
   /// Indicates if the refresh functionality is enabled.
   final bool onRefreshEnabled;
 
+  /// The bloc to use for the list view.
+  final B? bloc;
+
+  /// Indicates if the list view should shrink-wrap its contents.
+  final bool shrinkWrap;
+
   @override
   Widget build(BuildContext context) {
     return _BloweRefreshWrapper(
       onRefreshEnabled: onRefreshEnabled,
       onRefresh: () async {
-        context.read<B>().add(BloweFetch(paramsProvider()));
+        if (bloc != null) {
+          bloc!.add(BloweFetch(paramsProvider()));
+        } else {
+          context.read<B>().add(BloweFetch(paramsProvider()));
+        }
       },
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: padding,
+        shrinkWrap: shrinkWrap,
         children: [emptyWidget],
       ),
     );
