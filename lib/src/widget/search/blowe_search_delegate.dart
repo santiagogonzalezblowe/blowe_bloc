@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:blowe_bloc/blowe_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -17,14 +18,13 @@ typedef BloweSearchEmptyWidgetBuilder = Widget Function(
   String query,
 );
 
+typedef BloweSearchParamsProvider<P> = P Function(String query);
+
 class BloweSearchDelegate<
     B extends BloweSearchBloc<T, P>,
     T extends BloweSerializableItem,
     P extends BloweSearchParams> extends SearchDelegate<T?> {
   BloweSearchDelegate({
-    // super.searchFieldStyle,
-    // super.searchFieldDecorationTheme,
-    // super.textInputAction,
     required this.bloc,
     required this.itemBuilder,
     required this.paramsProvider,
@@ -33,16 +33,17 @@ class BloweSearchDelegate<
     this.initialBuilder,
     this.emptyBuilder,
     this.historyItemBuilder,
-  });
+  }) : _debouncer = _Debouncer(milliseconds: 300);
 
   final B bloc;
   final BloweSearchInitialBuilder<T>? initialBuilder;
   final BloweSearchItemBuilder<T> itemBuilder;
   final BloweSearchEmptyWidgetBuilder? emptyBuilder;
   final BloweSearchItemBuilder<T>? historyItemBuilder;
+  final _Debouncer _debouncer;
 
   /// A function that provides parameters for the BloweFetch event.
-  final BloweFetchParamsProvider<P> paramsProvider;
+  final BloweSearchParamsProvider<P> paramsProvider;
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -53,6 +54,7 @@ class BloweSearchDelegate<
         onPressed: () {
           query = '';
           showSuggestions(context);
+          bloc.add(BloweReset());
         },
         icon: const Icon(Icons.clear),
       ),
@@ -71,12 +73,25 @@ class BloweSearchDelegate<
 
   @override
   Widget buildResults(BuildContext context) {
-    bloc.add(BloweFetch<P>(paramsProvider()));
+    _debouncer.run(() {
+      if (query.isNotEmpty) {
+        bloc.add(BloweFetch<P>(paramsProvider(query)));
+      } else {
+        bloc.add(BloweReset());
+      }
+    });
     return _getBody(context, bloc, initialBuilder);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    _debouncer.run(() {
+      if (query.isNotEmpty) {
+        bloc.add(BloweFetch<P>(paramsProvider(query)));
+      } else {
+        bloc.add(BloweReset());
+      }
+    });
     return _getBody(context, bloc, initialBuilder, isSuggestions: true);
   }
 
@@ -100,15 +115,23 @@ class BloweSearchDelegate<
             itemCount: history.length,
             itemBuilder: (context, index) {
               final item = history[index];
-              return historyItemBuilder != null
-                  ? historyItemBuilder!(context, item, close)
-                  : ListTile(
-                      title: Text(item.toString()),
-                      onTap: () {
-                        query = item.toString();
-                        showResults(context);
-                      },
-                    );
+              return Dismissible(
+                key: ValueKey(item),
+                onDismissed: (direction) {
+                  bloc.add(BloweRemoveSearchHistory<T>(item));
+                },
+                background: Container(color: Colors.red),
+                child: historyItemBuilder != null
+                    ? historyItemBuilder!(context, item, close)
+                    : ListTile(
+                        title: Text(item.toString()),
+                        onTap: () {
+                          query = item.toString();
+                          bloc.add(BloweAddSearchHistory<T>(item));
+                          showResults(context);
+                        },
+                      ),
+              );
             },
           );
         }
@@ -125,7 +148,7 @@ class BloweSearchDelegate<
               Text(state.error.toString()),
               ElevatedButton(
                 onPressed: () {
-                  bloc.add(BloweFetch(paramsProvider()));
+                  bloc.add(BloweFetch(paramsProvider(query)));
                 },
                 child: const Text('Retry'),
               ),
@@ -143,8 +166,16 @@ class BloweSearchDelegate<
 
           return BlowePaginationListView<B, T, P, void>(
             bloc: bloc,
-            itemBuilder: (context, item) => itemBuilder(context, item, close),
-            paramsProvider: paramsProvider,
+            itemBuilder: (context, item) {
+              return GestureDetector(
+                onTap: () {
+                  bloc.add(BloweAddSearchHistory<T>(item));
+                  close(context, item);
+                },
+                child: itemBuilder(context, item, close),
+              );
+            },
+            paramsProvider: () => paramsProvider(query),
             emptyWidget: emptyBuilder?.call(context, query),
           );
         }
@@ -152,5 +183,18 @@ class BloweSearchDelegate<
         return const SizedBox.shrink();
       },
     );
+  }
+}
+
+class _Debouncer {
+  _Debouncer({required this.milliseconds});
+
+  final int milliseconds;
+  VoidCallback? action;
+  Timer? _timer;
+
+  void run(VoidCallback action) {
+    _timer?.cancel();
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
 }

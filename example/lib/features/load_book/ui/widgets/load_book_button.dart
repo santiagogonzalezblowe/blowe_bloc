@@ -11,6 +11,7 @@ class LoadBookButton extends StatelessWidget {
     return BloweBlocSelector<LoadBookBloc, BookModel>(
       builder: (context, enable) {
         return FloatingActionButton(
+          heroTag: 'loadBookButton',
           onPressed: enable
               ? () => context
                   .read<LoadBookBloc>()

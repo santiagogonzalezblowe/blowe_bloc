@@ -37,8 +37,9 @@ class BookService {
   Future<BooksPaginationModel> loadBooksByQuery(int page, String query) async {
     const pageSize = 10;
     await Future.delayed(const Duration(seconds: 2));
-    final filteredBooks =
-        _books.where((book) => book.title.contains(query)).toList();
+    final filteredBooks = _books
+        .where((book) => book.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
     final booksPage =
         filteredBooks.skip(page * pageSize).take(pageSize).toList();
 
