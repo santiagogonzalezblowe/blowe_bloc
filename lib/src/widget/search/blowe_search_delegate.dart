@@ -14,12 +14,6 @@ typedef BloweSearchItemBuilder<T> = Widget Function(
   void Function(T item) save,
 );
 
-typedef BloweSearchHistoryItemBuilder<T> = Widget Function(
-  BuildContext context,
-  T item,
-  void Function(BuildContext context, T? result) close,
-);
-
 typedef BloweSearchEmptyWidgetBuilder = Widget Function(
   BuildContext context,
   String query,
@@ -39,14 +33,12 @@ class BloweSearchDelegate<
     super.keyboardType,
     this.initialBuilder,
     this.emptyBuilder,
-    this.historyItemBuilder,
   }) : _debouncer = _Debouncer(milliseconds: 300);
 
   final B bloc;
   final BloweSearchInitialBuilder<T>? initialBuilder;
   final BloweSearchItemBuilder<T> itemBuilder;
   final BloweSearchEmptyWidgetBuilder? emptyBuilder;
-  final BloweSearchHistoryItemBuilder<T>? historyItemBuilder;
   final _Debouncer _debouncer;
 
   /// A function that provides parameters for the BloweFetch event.
@@ -128,15 +120,12 @@ class BloweSearchDelegate<
                   bloc.add(BloweRemoveSearchHistory<T>(item));
                 },
                 background: Container(color: Colors.red),
-                child: historyItemBuilder != null
-                    ? historyItemBuilder!(context, item, close)
-                    : ListTile(
-                        title: Text(item.toString()),
-                        onTap: () {
-                          query = item.toString();
-                          showResults(context);
-                        },
-                      ),
+                child: itemBuilder(
+                  context,
+                  item,
+                  close,
+                  (T item) => bloc.add(BloweAddSearchHistory<T>(item)),
+                ),
               );
             },
           );
