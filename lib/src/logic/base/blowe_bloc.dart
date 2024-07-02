@@ -72,7 +72,7 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
     BloweUpdateData<T> event,
     Emitter<BloweState<T>> emit,
   ) =>
-      emit(BloweCompleted<T>(event.data));
+      emit(BloweCompleted<T>(event.data, history: state.history));
 
   /// Emits the BloweInitial state to reset the Bloc to its initial state.
   /// This method is invoked when BloweReset is called.
@@ -83,5 +83,5 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
     BloweReset event,
     Emitter<BloweState<T>> emit,
   ) =>
-      emit(BloweInitial<T>());
+      emit(BloweInitial<T>(history: state.history));
 }

@@ -25,7 +25,7 @@ abstract class BlowePaginationBloc<T extends BlowePaginationModel<dynamic>, P>
   ) async {
     _page = 0;
 
-    emit(BloweInProgress<T>());
+    emit(BloweInProgress<T>(history: state.history));
 
     try {
       final data = await load(event.params!, _page);
@@ -34,6 +34,7 @@ abstract class BlowePaginationBloc<T extends BlowePaginationModel<dynamic>, P>
       emit(
         BloweError(
           e is Exception ? e : Exception('An error occurred'),
+          history: state.history,
         ),
       );
     }
@@ -49,7 +50,13 @@ abstract class BlowePaginationBloc<T extends BlowePaginationModel<dynamic>, P>
 
     _page++;
 
-    emit(BloweCompleted(state.data, isLoadingMore: true));
+    emit(
+      BloweCompleted(
+        state.data,
+        isLoadingMore: true,
+        history: state.history,
+      ),
+    );
 
     try {
       final data = await load(event.params!, _page);
@@ -58,6 +65,7 @@ abstract class BlowePaginationBloc<T extends BlowePaginationModel<dynamic>, P>
       emit(
         BloweError(
           e is Exception ? e : Exception('An error occurred'),
+          history: state.history,
         ),
       );
     }
