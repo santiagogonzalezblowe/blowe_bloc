@@ -72,6 +72,7 @@ class BlowePaginationListView<
     this.errorBuilder,
     this.onRefreshEnabled = true,
     this.bloc,
+    this.shrinkWrap = false,
     super.key,
   }) : assert(
           groupBy == null || groupHeaderBuilder != null,
@@ -107,6 +108,9 @@ class BlowePaginationListView<
 
   /// The bloc to use for the list view.
   final B? bloc;
+
+  /// Indicates if the list view should shrink-wrap its contents.
+  final bool shrinkWrap;
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +209,7 @@ class _BlowePaginationListViewLoaded<
     this.groupHeaderBuilder,
     this.onRefreshEnabled = true,
     this.bloc,
+    this.shrinkWrap = false,
   });
 
   /// The data for the list view.
@@ -236,6 +241,9 @@ class _BlowePaginationListViewLoaded<
 
   /// The bloc to use for the list view.
   final B? bloc;
+
+  /// Indicates if the list view should shrink-wrap its contents.
+  final bool shrinkWrap;
 
   @override
   State<_BlowePaginationListViewLoaded<B, T, P, G>> createState() =>
@@ -295,6 +303,7 @@ class __BlowePaginationListViewStateLoaded<
         physics: const BouncingScrollPhysics(
           parent: AlwaysScrollableScrollPhysics(),
         ),
+        shrinkWrap: widget.shrinkWrap,
         padding: widget.padding,
         controller: _scrollController,
         itemCount: _getItemCount(),
@@ -373,6 +382,7 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
     this.padding,
     this.onRefreshEnabled = true,
     this.bloc,
+    this.shrinkWrap = false,
     super.key,
   });
 
@@ -391,6 +401,9 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
   /// The bloc to use for the list view.
   final B? bloc;
 
+  /// Indicates if the list view should shrink-wrap its contents.
+  final bool shrinkWrap;
+
   @override
   Widget build(BuildContext context) {
     return _BloweRefreshWrapper(
@@ -405,6 +418,7 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: padding,
+        shrinkWrap: shrinkWrap,
         children: [emptyWidget],
       ),
     );
