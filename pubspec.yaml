@@ -4,7 +4,7 @@ version: 0.3.0
 repository: https://github.com/santiagogonzalezblowe/blowe_bloc
 issue_tracker: https://github.com/santiagogonzalezblowe/blowe_bloc/issues
 homepage: https://www.linkedin.com/in/santiagogonzalezblowe/
-topics: [bloc, state-management, pagination, widgets, form, search, history]
+topics: [bloc, state-management, pagination, widgets, form]
 
 environment:
   sdk: ">=2.17.0 <4.0.0"
