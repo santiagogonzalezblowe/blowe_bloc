@@ -105,7 +105,7 @@ class BloweSearchDelegate<
       bloc: bloc,
       builder: (context, state) {
         if (isSuggestions && query.isEmpty) {
-          final history = state.history?.items ?? [];
+          final history = state.history?.items.reversed.toList() ?? [];
           if (history.isEmpty) {
             return initialBuilder?.call(context, close) ??
                 const SizedBox.shrink();
