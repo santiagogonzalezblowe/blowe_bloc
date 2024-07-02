@@ -11,6 +11,13 @@ typedef BloweSearchItemBuilder<T> = Widget Function(
   BuildContext context,
   T item,
   void Function(BuildContext context, T? result) close,
+  void Function(T item) save,
+);
+
+typedef BloweSearchHistoryItemBuilder<T> = Widget Function(
+  BuildContext context,
+  T item,
+  void Function(BuildContext context, T? result) close,
 );
 
 typedef BloweSearchEmptyWidgetBuilder = Widget Function(
@@ -39,7 +46,7 @@ class BloweSearchDelegate<
   final BloweSearchInitialBuilder<T>? initialBuilder;
   final BloweSearchItemBuilder<T> itemBuilder;
   final BloweSearchEmptyWidgetBuilder? emptyBuilder;
-  final BloweSearchItemBuilder<T>? historyItemBuilder;
+  final BloweSearchHistoryItemBuilder<T>? historyItemBuilder;
   final _Debouncer _debouncer;
 
   /// A function that provides parameters for the BloweFetch event.
@@ -127,7 +134,6 @@ class BloweSearchDelegate<
                         title: Text(item.toString()),
                         onTap: () {
                           query = item.toString();
-                          bloc.add(BloweAddSearchHistory<T>(item));
                           showResults(context);
                         },
                       ),
@@ -167,12 +173,11 @@ class BloweSearchDelegate<
           return BlowePaginationListView<B, T, P, void>(
             bloc: bloc,
             itemBuilder: (context, item) {
-              return GestureDetector(
-                onTap: () {
-                  bloc.add(BloweAddSearchHistory<T>(item));
-                  close(context, item);
-                },
-                child: itemBuilder(context, item, close),
+              return itemBuilder(
+                context,
+                item,
+                close,
+                (T item) => bloc.add(BloweAddSearchHistory<T>(item)),
               );
             },
             paramsProvider: () => paramsProvider(query),
