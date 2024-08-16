@@ -1,3 +1,14 @@
+## 0.3.1
+
+### Bug Fixes
+
+- **Dropdown Overflow**: Fixed an issue in the `BloweDropdownButtonFormField` where long text in dropdown items could cause overflow. Added `isExpanded: true` to ensure proper text handling and prevent layout issues.
+
+### Dependency Updates
+
+- **Shared Preferences**: Updated `shared_preferences` from `^2.2.3` to `^2.3.2`.
+- **SDK Version**: Updated the Dart SDK constraint from `">=2.17.0 <4.0.0"` to `">=3.4.0 <4.0.0"`.
+
 ## 0.3.0
 
 ### New Features

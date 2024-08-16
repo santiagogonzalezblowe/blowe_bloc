@@ -108,6 +108,7 @@ abstract class BloweDropdownButtonFormField<T> extends StatelessWidget {
       ),
       icon: icon?.call(context),
       value: value,
+      isExpanded: true,
     );
   }
 }
