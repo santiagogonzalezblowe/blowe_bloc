@@ -34,17 +34,17 @@ class BloweBlocButton<B extends BloweBloc<T, dynamic>,
   /// - [enabled]: Indicates if the button should be enabled.
   ButtonStyleButton _createButton(BuildContext context, bool enabled) {
     switch (N) {
-      case ElevatedButton:
+      case const (ElevatedButton):
         return ElevatedButton(
           onPressed: enabled ? onPressed : null,
           child: Text(text),
         );
-      case TextButton:
+      case const (TextButton):
         return TextButton(
           onPressed: enabled ? onPressed : null,
           child: Text(text),
         );
-      case OutlinedButton:
+      case const (OutlinedButton):
         return OutlinedButton(
           onPressed: enabled ? onPressed : null,
           child: Text(text),
