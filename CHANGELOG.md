@@ -1,3 +1,27 @@
+## 0.4.0
+
+### New Features
+
+- **BloweNumberFormListTile**: Added a new form field widget featuring a number selector with increment (+) and decrement (-) buttons on the right side.
+
+  - Supports custom validation and state management with `BloweNumberFormController`.
+  - Follows the same structure and customizable properties as other `BloweFormListTile` widgets.
+
+- **BloweBoolFormListTile**:
+
+  - Added support for adaptive behavior (`SwitchListTile.adaptive` and `CheckboxListTile.adaptive`), making the widget compatible with both iOS and Android platforms.
+  - Improved controller-based state handling to ensure consistency between the UI and the internal state.
+
+- **BloweTextFormField**:
+  - Added support for multi-line input.
+  - The widget now allows customization of the keyboard type and input actions to support text input across multiple lines, providing more flexibility in forms.
+
+### Improvements
+
+- **BloweBoolFormListTile**:
+  - Enhanced the appearance and functionality of the `BloweBoolFormListTile`, allowing it to work with adaptive controls for both iOS and Android.
+  - Improved state management for better control over the widget’s state during form interactions.
+
 ## 0.3.1
 
 ### Bug Fixes
