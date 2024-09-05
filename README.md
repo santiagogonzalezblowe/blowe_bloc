@@ -18,9 +18,9 @@ In addition to the core state management features, `blowe_bloc` now includes adv
 
 - **Comprehensive Models**: Models such as `BloweNoParams` for operations requiring no parameters, `BlowePaginationModel` for managing paginated data, `BloweSerializableItem` for serializable items, and `BloweSearchParams` for search parameter handling. These models integrate seamlessly with the BLoCs to handle various data scenarios.
 
-- **Reactive Widgets**: A variety of widgets including `BloweBlocButton`, `BloweBlocListener`, `BloweBlocSelector`, `BloweMultiBlocSelector`, `BlowePaginationListView`, and form fields like `BloweTextFormField`, `BloweDropdownButtonFormField`, `BloweBoolFormListTile`, and `BloweRadiusForm`. These widgets are designed to react to state changes efficiently.
+- **Reactive Widgets**: A variety of widgets including `BloweBlocButton`, `BloweBlocListener`, `BloweBlocSelector`, `BloweMultiBlocSelector`, `BlowePaginationListView`, and form fields like `BloweTextFormField`, `BloweDropdownButtonFormField`, `BloweBoolFormListTile`, `BloweRadiusForm`, and the newly added `BloweNumberFormListTile`. These widgets are designed to react to state changes efficiently.
 
-- **Form Field Widgets**: Specialized form field widgets that offer enhanced functionality, validation, and customizability. These include `BloweTextFormField` for text input, `BloweDropdownButtonFormField` for dropdowns, `BloweBoolFormListTile` for switch and checkbox tiles, and `BloweRadiusForm` for radio list tiles.
+- **Form Field Widgets**: Specialized form field widgets that offer enhanced functionality, validation, and customizability. These include `BloweTextFormField` for text input (now with multi-line support), `BloweDropdownButtonFormField` for dropdowns, `BloweBoolFormListTile` for switch and checkbox tiles (with adaptive support), `BloweRadiusForm` for radio list tiles, and `BloweNumberFormListTile` for number selection with increment and decrement buttons.
 
 - **Seamless Integration**: Built on top of `flutter_bloc` for easy integration into your existing Flutter projects. The package ensures minimal boilerplate while offering maximum functionality and flexibility.
 
@@ -366,6 +366,27 @@ BloweRadiusForm<int>(
   validator: (context, value) {
     if (value == null) {
       return 'Please select an item.';
+    }
+    return null;
+  },
+);
+```
+
+### BloweNumberFormListTile
+
+A form field widget that displays a number selector with increment (+) and decrement (-) buttons. The `BloweNumberFormListTile` widget provides a simple way to manage numerical input within a form, utilizing a `BloweNumberFormController` to manage its state. This widget supports customization of the appearance and behavior, including validation, enabling/disabling, and visual styling.
+
+#### Example
+
+```dart
+final _controller = BloweNumberFormController(initialValue: 0);
+
+BloweNumberFormListTile(
+  controller: _controller,
+  title: (context) => 'Select Quantity',
+  validator: (context, value) {
+    if (value == null || value < 0) {
+      return 'Please select a valid quantity.';
     }
     return null;
   },

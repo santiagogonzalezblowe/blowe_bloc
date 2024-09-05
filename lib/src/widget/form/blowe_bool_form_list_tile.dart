@@ -56,7 +56,7 @@ typedef BloweBoolFormListTileValidator = String? Function(
 ///   );
 /// }
 /// ```
-class BloweBoolFormListTile extends StatelessWidget {
+class BloweBoolFormListTile extends StatefulWidget {
   /// Creates an instance of `BloweBoolFormListTile`.
   ///
   /// - [controller]: The controller for the switch or checkbox, managing
@@ -79,6 +79,7 @@ class BloweBoolFormListTile extends StatelessWidget {
     this.enabled = true,
     this.dense,
     this.controlAffinity = ListTileControlAffinity.platform,
+    this.adaptive = false,
   });
 
   /// The controller for the switch or checkbox.
@@ -121,16 +122,61 @@ class BloweBoolFormListTile extends StatelessWidget {
   /// Specifies the type of tile to use, either switch or checkbox.
   final BloweBoolListTileType type;
 
+  /// Indicates if the switch or checkbox tile should be adaptive.
+  final bool adaptive;
+
+  @override
+  State<BloweBoolFormListTile> createState() => _BloweBoolFormListTileState();
+}
+
+class _BloweBoolFormListTileState extends State<BloweBoolFormListTile> {
+  late bool _currentValue;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentValue = widget.controller.value;
+    widget.controller.addListener(_handleControllerChange);
+  }
+
+  @override
+  void didUpdateWidget(covariant BloweBoolFormListTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller.removeListener(_handleControllerChange);
+      widget.controller.addListener(_handleControllerChange);
+    }
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_handleControllerChange);
+    super.dispose();
+  }
+
+  void _handleControllerChange() {
+    if (_currentValue != widget.controller.value) {
+      setState(() => _currentValue = widget.controller.value);
+    }
+  }
+
+  void _handleValueChanged(bool? newValue) {
+    if (newValue == null) return;
+
+    if (widget.enabled) {
+      setState(() => _currentValue = newValue);
+      widget.controller.value = newValue;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FormField<bool>(
-      initialValue: controller.value,
-      enabled: enabled,
-      validator: (value) => validator?.call(context, value ?? false),
+      initialValue: _currentValue,
+      enabled: widget.enabled,
+      validator: (value) => widget.validator?.call(context, value ?? false),
       builder: (state) {
-        final enabled = state.widget.enabled;
-        final value = state.value ?? false;
-        final didChange = state.didChange;
         final hasError = state.hasError;
 
         final shape = Theme.of(context).inputDecorationTheme.border?.copyWith(
@@ -139,7 +185,7 @@ class BloweBoolFormListTile extends StatelessWidget {
                   .border
                   ?.borderSide
                   .copyWith(
-                    color: enabled
+                    color: widget.enabled
                         ? hasError
                             ? Theme.of(context).colorScheme.error
                             : Theme.of(context).primaryColor
@@ -150,41 +196,59 @@ class BloweBoolFormListTile extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (type == BloweBoolListTileType.switchTile)
-              SwitchListTile(
-                value: value,
-                onChanged: enabled
-                    ? (newValue) {
-                        didChange(newValue);
-                        controller.value = newValue;
-                      }
-                    : null,
-                title: Text(title(context)),
-                shape: shape,
-                dense: dense,
-                controlAffinity: controlAffinity,
-              ),
-            if (type == BloweBoolListTileType.checkboxTile)
-              CheckboxListTile(
-                value: value,
-                onChanged: enabled
-                    ? (newValue) {
-                        if (newValue == null) return;
-
-                        didChange(newValue);
-                        controller.value = newValue;
-                      }
-                    : null,
-                title: Text(title(context)),
-                shape: shape,
-                dense: dense,
-                controlAffinity: controlAffinity,
-              ),
-            if (hasError && enabled) BloweFormErrorText(state.errorText ?? ''),
+            _buildListTile(shape),
+            if (hasError && widget.enabled)
+              BloweFormErrorText(state.errorText ?? ''),
           ],
         );
       },
     );
+  }
+
+  Widget _buildListTile(ShapeBorder? shape) {
+    final type = widget.type;
+
+    if (type == BloweBoolListTileType.switchTile) {
+      if (widget.adaptive) {
+        return SwitchListTile.adaptive(
+          value: _currentValue,
+          onChanged: widget.enabled ? _handleValueChanged : null,
+          title: Text(widget.title(context)),
+          shape: shape,
+          dense: widget.dense,
+          controlAffinity: widget.controlAffinity,
+        );
+      } else {
+        return SwitchListTile(
+          value: _currentValue,
+          onChanged: widget.enabled ? _handleValueChanged : null,
+          title: Text(widget.title(context)),
+          shape: shape,
+          dense: widget.dense,
+          controlAffinity: widget.controlAffinity,
+        );
+      }
+    } else {
+      if (widget.adaptive) {
+        return CheckboxListTile.adaptive(
+          value: _currentValue,
+          onChanged: widget.enabled ? _handleValueChanged : null,
+          title: Text(widget.title(context)),
+          shape: shape,
+          dense: widget.dense,
+          controlAffinity: widget.controlAffinity,
+        );
+      } else {
+        return CheckboxListTile(
+          value: _currentValue,
+          onChanged: widget.enabled ? _handleValueChanged : null,
+          title: Text(widget.title(context)),
+          shape: shape,
+          dense: widget.dense,
+          controlAffinity: widget.controlAffinity,
+        );
+      }
+    }
   }
 }
 

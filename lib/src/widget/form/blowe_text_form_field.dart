@@ -50,7 +50,7 @@ typedef BloweTextFormFieldOnTap = void Function(
 );
 
 /// A text form field widget that supports optional obscuring of text,
-/// custom validation, and custom icons.
+/// custom validation, custom icons, and multiline input.
 abstract class BloweTextFormField extends StatefulWidget {
   /// Creates an instance of BloweTextFormField.
   ///
@@ -70,6 +70,7 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// - [readOnly]: Indicates if the text field is read-only (default is false).
   /// - [onTap]: Optional callback when the text field is tapped.
   /// - [inputFormatters]: Optional list of input formatters.
+  /// - [maxLines]: The maximum number of lines to display (default is 1).
   const BloweTextFormField({
     required this.labelText,
     this.hintText,
@@ -87,6 +88,7 @@ abstract class BloweTextFormField extends StatefulWidget {
     this.readOnly = false,
     this.onTap,
     this.inputFormatters,
+    this.maxLines = 1,
   });
 
   /// Indicates if the text should be obscured.
@@ -134,6 +136,10 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// Optional list of input formatters.
   final List<TextInputFormatter>? inputFormatters;
 
+  /// The maximum number of lines for the text field.
+  /// If greater than 1, the field can handle multi-line input.
+  final int? maxLines;
+
   @override
   State<BloweTextFormField> createState() => _BloweTextFormFieldState();
 }
@@ -165,16 +171,25 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
       validator: (value) => widget.validator?.call(context, value),
       enabled: widget.enabled,
       onEditingComplete: widget.onEditingComplete,
-      keyboardType: widget.keyboardType,
+      keyboardType: _keyboardType,
       textInputAction: widget.textInputAction,
       initialValue: widget.initialValue,
       readOnly: widget.readOnly,
       onTap: () => widget.onTap?.call(context),
       inputFormatters: widget.inputFormatters,
+      maxLines: widget.maxLines,
     );
   }
 
   void toggleObscureText() {
     setState(() => _obscureText = !_obscureText);
+  }
+
+  TextInputType get _keyboardType {
+    if (widget.keyboardType != null) return widget.keyboardType!;
+
+    if (widget.maxLines == 1) return TextInputType.text;
+
+    return TextInputType.multiline;
   }
 }
