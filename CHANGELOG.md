@@ -1,3 +1,27 @@
+## 0.4.1
+
+### Improvements
+
+- **BloweBloc**:
+
+  - Introduced convenience methods for executing key events (`fetch`, `fetchMore`, `updateData`, `reset`) directly on the bloc. This enhances usability by allowing users to call these actions without manually emitting events.
+
+- **BloweSearchBloc**:
+
+  - Added methods for simplified search history management:
+    - `addSearchHistory`: Adds an item to the search history.
+    - `removeSearchHistory`: Removes an item from the search history.
+    - `clearSearchHistory`: Clears the entire search history.
+    - `loadSearchHistory`: Loads search history from persistent storage.
+  - These methods streamline event handling for search history without manually emitting events.
+
+- **BloweNumberFormListTile**:
+  - Improved styling: The title now properly reflects the disabled state, ensuring visual consistency when the widget is disabled.
+
+### BloweWidgets Update
+
+- Several `BloweWidgets` have been updated to integrate the new event-handling improvements from `BloweBlocs`. These changes improve ease of use and maintain consistency across widgets.
+
 ## 0.4.0
 
 ### New Features
