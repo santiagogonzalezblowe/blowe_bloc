@@ -381,20 +381,17 @@ class __BlowePaginationListViewStateLoaded<
   }
 
   dynamic _getItemAtWithGroup(int index) {
-    if (widget.startWidget != null && index == 0) return widget.startWidget!;
-
-    final endWidgetIndex = _itemCount - (widget.isLoadingMore ? 2 : 1);
-    if (widget.endWidget != null && index == endWidgetIndex) {
-      return widget.endWidget!;
+    if (widget.startWidget != null && index == 0) {
+      return widget.startWidget!;
     }
 
-    var currentIndex = widget.startWidget != null ? index - 1 : index;
+    final currentIndex = widget.startWidget != null ? index - 1 : index;
 
     final groupedItems = _groupItems();
-    currentIndex = 0;
+    var totalIndex = 0;
 
     for (final group in groupedItems.entries) {
-      if (currentIndex == index) {
+      if (totalIndex == currentIndex) {
         return _GroupHeader(
           header: widget.groupHeaderBuilder!(
             context,
@@ -404,11 +401,18 @@ class __BlowePaginationListViewStateLoaded<
         );
       }
 
-      currentIndex++;
-      if (index < currentIndex + group.value.length) {
-        return group.value[index - currentIndex];
+      totalIndex++;
+
+      if (currentIndex < totalIndex + group.value.length) {
+        return group.value[currentIndex - totalIndex];
       }
-      currentIndex += group.value.length;
+
+      totalIndex += group.value.length;
+    }
+
+    final endWidgetIndex = _itemCount - (widget.isLoadingMore ? 2 : 1);
+    if (widget.endWidget != null && currentIndex == endWidgetIndex) {
+      return widget.endWidget!;
     }
 
     return null;
