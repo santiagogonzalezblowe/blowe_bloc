@@ -66,6 +66,8 @@ class BlowePaginationListView<
     required this.itemBuilder,
     required this.paramsProvider,
     this.emptyWidget,
+    this.startWidget,
+    this.endWidget,
     this.padding,
     this.filter,
     this.groupBy,
@@ -88,6 +90,12 @@ class BlowePaginationListView<
 
   /// A widget to display when the list is empty.
   final Widget? emptyWidget;
+
+  /// A widget to display at the start of the list.
+  final Widget? startWidget;
+
+  /// A widget to display at the end of the list.
+  final Widget? endWidget;
 
   /// Optional padding for the list view.
   final EdgeInsetsGeometry? padding;
@@ -204,6 +212,8 @@ class _BlowePaginationListViewLoaded<
     required this.isLoadingMore,
     required this.itemBuilder,
     required this.paramsProvider,
+    this.startWidget,
+    this.endWidget,
     super.key,
     this.padding,
     this.groupBy,
@@ -230,6 +240,12 @@ class _BlowePaginationListViewLoaded<
 
   /// A function that provides parameters for the BloweFetch event.
   final BloweFetchParamsProvider<P> paramsProvider;
+
+  /// A widget to display at the start of the list.
+  final Widget? startWidget;
+
+  /// A widget to display at the end of the list.
+  final Widget? endWidget;
 
   /// Optional function to group items in the list.
   final BloweItemGrouper<T, G>? groupBy;
@@ -311,42 +327,59 @@ class __BlowePaginationListViewStateLoaded<
         shrinkWrap: widget.shrinkWrap,
         padding: widget.padding,
         controller: _scrollController,
-        itemCount: _getItemCount(),
+        itemCount: _itemCount,
         itemBuilder: (context, index) {
-          if (index == _getItemCount() - 1 && widget.isLoadingMore) {
+          if (index == _itemCount - 1 && widget.isLoadingMore) {
             return const LinearProgressIndicator(minHeight: 2);
           }
+
           final item = _getItemAt(index);
-          if (item is _GroupHeader) {
-            return item.header;
-          }
+
+          if (item is _GroupHeader) return item.header;
+
+          if (item is Widget) return item;
+
           return widget.itemBuilder(context, item as T);
         },
       ),
     );
   }
 
-  int _getItemCount() {
-    if (widget.groupBy == null) {
-      return widget.filteredData.items.length + (widget.isLoadingMore ? 1 : 0);
+  int get _itemCount {
+    var itemCount = widget.filteredData.items.length;
+
+    if (widget.groupBy != null) {
+      final groupedItems = _groupItems();
+      itemCount = groupedItems.keys.length;
+      groupedItems.forEach((key, value) {
+        itemCount += value.length;
+      });
     }
-    final groupedItems = _groupItems();
-    var count = groupedItems.keys.length;
-    groupedItems.forEach((key, value) {
-      count += value.length;
-    });
-    if (widget.isLoadingMore) {
-      count++;
-    }
-    return count;
+
+    if (widget.isLoadingMore) itemCount++;
+    if (widget.startWidget != null) itemCount++;
+    if (widget.endWidget != null) itemCount++;
+
+    return itemCount;
   }
 
   dynamic _getItemAt(int index) {
-    if (widget.groupBy == null) {
-      return widget.filteredData.items[index];
+    if (widget.startWidget != null && index == 0) {
+      return widget.startWidget!;
     }
+
+    var currentIndex = widget.startWidget != null ? index - 1 : index;
+
+    if (widget.endWidget != null &&
+        currentIndex == _itemCount - (widget.isLoadingMore ? 2 : 1)) {
+      return widget.endWidget!;
+    }
+
+    if (widget.groupBy == null) return widget.filteredData.items[currentIndex];
+
     final groupedItems = _groupItems();
-    var currentIndex = 0;
+    currentIndex = 0;
+
     for (final group in groupedItems.entries) {
       if (currentIndex == index) {
         return _GroupHeader(
@@ -357,12 +390,14 @@ class __BlowePaginationListViewStateLoaded<
           ),
         );
       }
+
       currentIndex++;
       if (index < currentIndex + group.value.length) {
         return group.value[index - currentIndex];
       }
       currentIndex += group.value.length;
     }
+
     return null;
   }
 
