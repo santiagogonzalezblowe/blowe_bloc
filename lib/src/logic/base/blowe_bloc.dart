@@ -1,4 +1,5 @@
 import 'package:blowe_bloc/blowe_bloc.dart';
+import 'package:flutter/foundation.dart';
 
 /// BloweBloc is an abstract class that extends Bloc and serves as the base
 /// for managing specific events and states in the blowe_bloc package.
@@ -84,6 +85,10 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
     Emitter<BloweState<T>> emit,
   ) =>
       emit(BloweInitial<T>(history: state.history));
+
+  @protected
+  @override
+  void add(BloweEvent event) => super.add(event);
 
   /// Emits a [BloweFetch] event with the provided parameters.
   ///

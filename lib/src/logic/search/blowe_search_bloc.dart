@@ -151,4 +151,20 @@ abstract class BloweSearchBloc<T extends BloweSerializableItem,
       history: historyPaginationModel,
     );
   }
+
+  /// Adds an item to the search history.
+  ///
+  /// - [item]: The item to be added to the search history.
+  void addSearchHistory(T item) => add(BloweAddSearchHistory(item));
+
+  /// Removes an item from the search history.
+  ///
+  /// - [item]: The item to be removed from the search history.
+  void removeSearchHistory(T item) => add(BloweRemoveSearchHistory(item));
+
+  /// Clears the entire search history.
+  void clearSearchHistory() => add(BloweClearSearchHistory());
+
+  /// Loads the search history.
+  void loadSearchHistory() => add(BloweLoadSearchHistory());
 }

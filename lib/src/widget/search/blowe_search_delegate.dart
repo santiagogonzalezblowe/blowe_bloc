@@ -98,7 +98,7 @@ class BloweSearchDelegate<
         onPressed: () {
           query = '';
           showSuggestions(context);
-          bloc.add(BloweReset());
+          bloc.reset();
         },
         icon: const Icon(Icons.clear),
       ),
@@ -119,9 +119,9 @@ class BloweSearchDelegate<
   Widget buildResults(BuildContext context) {
     _debouncer.run(() {
       if (query.isNotEmpty) {
-        bloc.add(BloweFetch<P>(paramsProvider(query)));
+        bloc.fetch(paramsProvider(query));
       } else {
-        bloc.add(BloweReset());
+        bloc.reset();
       }
     });
     return _getBody(context, bloc, initialBuilder);
@@ -131,9 +131,9 @@ class BloweSearchDelegate<
   Widget buildSuggestions(BuildContext context) {
     _debouncer.run(() {
       if (query.isNotEmpty) {
-        bloc.add(BloweFetch<P>(paramsProvider(query)));
+        bloc.fetch(paramsProvider(query));
       } else {
-        bloc.add(BloweReset());
+        bloc.reset();
       }
     });
     return _getBody(context, bloc, initialBuilder, isSuggestions: true);
@@ -162,14 +162,14 @@ class BloweSearchDelegate<
               return Dismissible(
                 key: ValueKey(item),
                 onDismissed: (direction) {
-                  bloc.add(BloweRemoveSearchHistory<T>(item));
+                  bloc.removeSearchHistory(item);
                 },
                 background: Container(color: Colors.red),
                 child: itemBuilder(
                   context,
                   item,
                   close,
-                  (T item) => bloc.add(BloweAddSearchHistory<T>(item)),
+                  (T item) => bloc.addSearchHistory(item),
                 ),
               );
             },
@@ -187,9 +187,7 @@ class BloweSearchDelegate<
             children: [
               Text(state.error.toString()),
               ElevatedButton(
-                onPressed: () {
-                  bloc.add(BloweFetch(paramsProvider(query)));
-                },
+                onPressed: () => bloc.fetch(paramsProvider(query)),
                 child: const Text('Retry'),
               ),
             ],
@@ -211,7 +209,7 @@ class BloweSearchDelegate<
                 context,
                 item,
                 close,
-                (T item) => bloc.add(BloweAddSearchHistory<T>(item)),
+                (T item) => bloc.addSearchHistory(item),
               );
             },
             paramsProvider: () => paramsProvider(query),
