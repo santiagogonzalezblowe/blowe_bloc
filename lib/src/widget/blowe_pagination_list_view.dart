@@ -335,10 +335,11 @@ class __BlowePaginationListViewStateLoaded<
             return const LinearProgressIndicator(minHeight: 2);
           }
 
-          final item = _getItemAt(index);
+          final item = widget.groupBy == null
+              ? _getItemAt(index)
+              : _getItemAtWithGroup(index);
 
           if (item is _GroupHeader) return item.header;
-
           if (item is Widget) return item;
 
           return widget.itemBuilder(context, item as T);
@@ -371,17 +372,25 @@ class __BlowePaginationListViewStateLoaded<
     }
 
     final endWidgetIndex = _itemCount - (widget.isLoadingMore ? 2 : 1);
+    if (widget.endWidget != null && index == endWidgetIndex) {
+      return widget.endWidget!;
+    }
 
+    final currentIndex = widget.startWidget != null ? index - 1 : index;
+    return widget.filteredData.items[currentIndex];
+  }
+
+  dynamic _getItemAtWithGroup(int index) {
+    if (widget.startWidget != null && index == 0) return widget.startWidget!;
+
+    final endWidgetIndex = _itemCount - (widget.isLoadingMore ? 2 : 1);
     if (widget.endWidget != null && index == endWidgetIndex) {
       return widget.endWidget!;
     }
 
     var currentIndex = widget.startWidget != null ? index - 1 : index;
 
-    if (widget.groupBy == null) return widget.filteredData.items[currentIndex];
-
     final groupedItems = _groupItems();
-    currentIndex = 0;
 
     for (final group in groupedItems.entries) {
       if (currentIndex == index) {
