@@ -411,7 +411,7 @@ class __BlowePaginationListViewStateLoaded<
     }
 
     final endWidgetIndex = _itemCount - (widget.isLoadingMore ? 2 : 1);
-    if (widget.endWidget != null && currentIndex == endWidgetIndex) {
+    if (widget.endWidget != null && index == endWidgetIndex) {
       return widget.endWidget!;
     }
 
