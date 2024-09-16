@@ -1,3 +1,14 @@
+## 0.4.2
+
+### New Features
+
+- **BlowePaginationListView**:
+
+  - Added `startWidget` and `endWidget` support:
+    - `startWidget`: This optional widget is displayed at the beginning of the list (index 0).
+    - `endWidget`: This optional widget is displayed at the end of the list, before the `LinearProgressIndicator` when pagination is in progress.
+  - These widgets allow for greater flexibility in adding custom elements to the beginning or end of the paginated list, improving the ability to customize the user interface.
+
 ## 0.4.1
 
 ### Improvements
