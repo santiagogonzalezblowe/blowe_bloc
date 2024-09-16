@@ -84,4 +84,22 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
     Emitter<BloweState<T>> emit,
   ) =>
       emit(BloweInitial<T>(history: state.history));
+
+  /// Emits a [BloweFetch] event with the provided parameters.
+  ///
+  /// - [params]: The parameters for the fetch operation.
+  void fetch(P params) => add(BloweFetch(params));
+
+  /// Emits a [BloweFetchMore] event with the provided parameters.
+  ///
+  /// - [params]: The parameters for the fetch more operation.
+  void fetchMore(P params) => add(BloweFetchMore(params));
+
+  /// Emits a [BloweUpdateData] event with the new data.
+  ///
+  /// - [data]: The new data to update the bloc with.
+  void updateData(T data) => add(BloweUpdateData(data));
+
+  /// Emits a [BloweReset] event to reset the bloc's state.
+  void reset() => add(BloweReset());
 }
