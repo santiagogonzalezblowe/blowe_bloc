@@ -136,6 +136,7 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
             ListTile(
               title: Text(widget.title(context)),
               shape: shape,
+              enabled: widget.enabled,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [

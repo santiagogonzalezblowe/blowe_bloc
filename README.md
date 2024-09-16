@@ -153,9 +153,7 @@ BloweBlocSelector<MyBloweBloc>(
     return FloatingActionButton(
       onPressed: enabled
           ? () {
-              context.read<MyBloweBloc>().add(
-                    const BloweFetch(BloweNoParams()),
-                  );
+              context.read<MyBloweBloc>().fetch(const BloweNoParams()),
             }
           : null,
       child: const Icon(Icons.add),
@@ -223,9 +221,7 @@ BloweBlocListener<MyBloweBloc, String>(
 BloweBlocButton<MyBloweLoadBloc, ElevatedButton>(
   text: 'Load Data',
   onPressed: () {
-    context.read<MyBloweLoadBloc>().add(
-          const BloweFetch(BloweNoParams()),
-        );
+    context.read<MyBloweLoadBloc>().fetch(const BloweNoParams());
   },
 )
 ```
@@ -405,7 +401,7 @@ BloweNumberFormListTile(
 const params = BloweNoParams();
 
 // Use BloweNoParams in an operation that doesn't require parameters.
-myBloc.add(BloweFetch(params));
+myBloc.fetch(params);
 ```
 
 ### BlowePaginationModel

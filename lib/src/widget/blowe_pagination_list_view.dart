@@ -134,9 +134,9 @@ class BlowePaginationListView<
               ElevatedButton(
                 onPressed: () {
                   if (bloc != null) {
-                    bloc!.add(BloweFetch(paramsProvider()));
+                    bloc!.fetch(paramsProvider());
                   } else {
-                    context.read<B>().add(BloweFetch(paramsProvider()));
+                    context.read<B>().fetch(paramsProvider());
                   }
                 },
                 child: const Text('Retry'),
@@ -277,11 +277,9 @@ class __BlowePaginationListViewStateLoaded<
           if (scrollDirection == ScrollDirection.reverse) {
             if (currentOffset >= maxScrollExtent - 200) {
               if (widget.bloc != null) {
-                widget.bloc!.add(BloweFetchMore(widget.paramsProvider()));
+                widget.bloc!.fetchMore(widget.paramsProvider());
               } else {
-                context.read<B>().add(
-                      BloweFetchMore(widget.paramsProvider()),
-                    );
+                context.read<B>().fetchMore(widget.paramsProvider());
               }
             }
           }
@@ -301,9 +299,9 @@ class __BlowePaginationListViewStateLoaded<
       onRefreshEnabled: widget.onRefreshEnabled,
       onRefresh: () async {
         if (widget.bloc != null) {
-          widget.bloc!.add(BloweFetch(widget.paramsProvider()));
+          widget.bloc!.fetch(widget.paramsProvider());
         } else {
-          context.read<B>().add(BloweFetch(widget.paramsProvider()));
+          context.read<B>().fetch(widget.paramsProvider());
         }
       },
       child: ListView.builder(
@@ -417,9 +415,9 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
       onRefreshEnabled: onRefreshEnabled,
       onRefresh: () async {
         if (bloc != null) {
-          bloc!.add(BloweFetch(paramsProvider()));
+          bloc!.fetch(paramsProvider());
         } else {
-          context.read<B>().add(BloweFetch(paramsProvider()));
+          context.read<B>().fetch(paramsProvider());
         }
       },
       child: ListView(
