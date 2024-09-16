@@ -391,6 +391,7 @@ class __BlowePaginationListViewStateLoaded<
     var currentIndex = widget.startWidget != null ? index - 1 : index;
 
     final groupedItems = _groupItems();
+    currentIndex = 0;
 
     for (final group in groupedItems.entries) {
       if (currentIndex == index) {
