@@ -178,6 +178,8 @@ class BlowePaginationListView<
             itemBuilder: itemBuilder,
             padding: padding,
             paramsProvider: paramsProvider,
+            startWidget: startWidget,
+            endWidget: endWidget,
             groupBy: groupBy,
             groupHeaderBuilder: groupHeaderBuilder,
             onRefreshEnabled: onRefreshEnabled,
