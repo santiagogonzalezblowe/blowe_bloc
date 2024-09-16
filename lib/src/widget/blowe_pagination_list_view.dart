@@ -370,13 +370,13 @@ class __BlowePaginationListViewStateLoaded<
       return widget.startWidget!;
     }
 
-    var currentIndex = widget.startWidget != null ? index - 1 : index;
-
     final endWidgetIndex = _itemCount - (widget.isLoadingMore ? 2 : 1);
 
-    if (widget.endWidget != null && currentIndex == endWidgetIndex) {
+    if (widget.endWidget != null && index == endWidgetIndex) {
       return widget.endWidget!;
     }
+
+    var currentIndex = widget.startWidget != null ? index - 1 : index;
 
     if (widget.groupBy == null) return widget.filteredData.items[currentIndex];
 
