@@ -49,6 +49,9 @@ class BloweMultiBlocSelectorState extends State<BloweMultiBlocSelector> {
   @override
   void initState() {
     super.initState();
+
+    _emitInitialValue();
+
     for (final bloc in widget.blocs) {
       bloc.stream.listen((state) {
         _streamController.add(
@@ -58,6 +61,13 @@ class BloweMultiBlocSelectorState extends State<BloweMultiBlocSelector> {
         );
       });
     }
+  }
+
+  void _emitInitialValue() {
+    final isEnabled = widget.blocs.every(
+      (bloc) => bloc.state is! BloweInProgress,
+    );
+    _streamController.add(isEnabled);
   }
 
   @override
