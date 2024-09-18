@@ -174,7 +174,7 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
         color: widget.enabled ? null : Theme.of(context).disabledColor,
       );
     } else {
-      return Theme.of(context).textTheme.labelLarge?.copyWith(
+      return Theme.of(context).textTheme.labelMedium?.copyWith(
             color: widget.enabled ? null : Theme.of(context).disabledColor,
           );
     }
