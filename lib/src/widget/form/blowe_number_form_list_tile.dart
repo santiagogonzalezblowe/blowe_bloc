@@ -24,6 +24,7 @@ class BloweNumberFormListTile extends StatefulWidget {
   /// - [enabled]: Indicates if the field is enabled (default is true).
   /// - [minValue]: The minimum value allowed (default is 0).
   /// - [maxValue]: The maximum value allowed (optional).
+  /// - [numberStyle]: The style for the number text.
   const BloweNumberFormListTile({
     required this.controller,
     required this.title,
@@ -32,6 +33,7 @@ class BloweNumberFormListTile extends StatefulWidget {
     this.enabled = true,
     this.minValue = 0,
     this.maxValue,
+    this.numberStyle,
   });
 
   /// The controller for the number input field.
@@ -51,6 +53,9 @@ class BloweNumberFormListTile extends StatefulWidget {
 
   /// The maximum value allowed for the number input (optional).
   final int? maxValue;
+
+  /// The style for the number text.
+  final TextStyle? numberStyle;
 
   @override
   State<BloweNumberFormListTile> createState() =>
@@ -144,7 +149,11 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
                     onPressed: widget.enabled ? _decrementValue : null,
                     icon: const Icon(Icons.remove),
                   ),
-                  Text('$_currentValue'),
+                  Text(
+                    '$_currentValue',
+                    style: widget.numberStyle ??
+                        Theme.of(context).textTheme.labelMedium,
+                  ),
                   IconButton(
                     onPressed: widget.enabled ? _incrementValue : null,
                     icon: const Icon(Icons.add),
