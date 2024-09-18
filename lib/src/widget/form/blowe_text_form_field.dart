@@ -71,6 +71,7 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// - [onTap]: Optional callback when the text field is tapped.
   /// - [inputFormatters]: Optional list of input formatters.
   /// - [maxLines]: The maximum number of lines to display (default is 1).
+  /// - [autofillHints]: Optional autofill hints for the text field.
   const BloweTextFormField({
     required this.labelText,
     this.hintText,
@@ -89,6 +90,7 @@ abstract class BloweTextFormField extends StatefulWidget {
     this.onTap,
     this.inputFormatters,
     this.maxLines = 1,
+    this.autofillHints,
   });
 
   /// Indicates if the text should be obscured.
@@ -140,6 +142,20 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// If greater than 1, the field can handle multi-line input.
   final int? maxLines;
 
+  /// Optional autofill hints for the text field.
+  ///
+  /// This property provides hints to the autofill service about the type of
+  /// information expected in the text field. It can be used to improve the
+  /// accuracy and relevance of autofill suggestions.
+  ///
+  /// Example values include:
+  /// - [AutofillHints.email]: For email addresses.
+  /// - [AutofillHints.password]: For passwords.
+  /// - [AutofillHints.username]: For usernames.
+  ///
+  /// If null, no autofill hints will be provided.
+  final Iterable<String>? autofillHints;
+
   @override
   State<BloweTextFormField> createState() => _BloweTextFormFieldState();
 }
@@ -178,6 +194,7 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
       onTap: () => widget.onTap?.call(context),
       inputFormatters: widget.inputFormatters,
       maxLines: widget.maxLines,
+      autofillHints: widget.autofillHints,
     );
   }
 

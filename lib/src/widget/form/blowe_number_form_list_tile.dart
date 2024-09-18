@@ -24,6 +24,7 @@ class BloweNumberFormListTile extends StatefulWidget {
   /// - [enabled]: Indicates if the field is enabled (default is true).
   /// - [minValue]: The minimum value allowed (default is 0).
   /// - [maxValue]: The maximum value allowed (optional).
+  /// - [numberStyle]: The style for the number text.
   const BloweNumberFormListTile({
     required this.controller,
     required this.title,
@@ -32,6 +33,7 @@ class BloweNumberFormListTile extends StatefulWidget {
     this.enabled = true,
     this.minValue = 0,
     this.maxValue,
+    this.numberStyle,
   });
 
   /// The controller for the number input field.
@@ -51,6 +53,9 @@ class BloweNumberFormListTile extends StatefulWidget {
 
   /// The maximum value allowed for the number input (optional).
   final int? maxValue;
+
+  /// The style for the number text.
+  final TextStyle? numberStyle;
 
   @override
   State<BloweNumberFormListTile> createState() =>
@@ -116,26 +121,12 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
       builder: (state) {
         final hasError = state.hasError;
 
-        final shape = Theme.of(context).inputDecorationTheme.border?.copyWith(
-              borderSide: Theme.of(context)
-                  .inputDecorationTheme
-                  .border
-                  ?.borderSide
-                  .copyWith(
-                    color: widget.enabled
-                        ? hasError
-                            ? Theme.of(context).colorScheme.error
-                            : Theme.of(context).primaryColor
-                        : Theme.of(context).disabledColor,
-                  ),
-            );
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
               title: Text(widget.title(context)),
-              shape: shape,
+              shape: _getShape(hasError),
               enabled: widget.enabled,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -144,7 +135,7 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
                     onPressed: widget.enabled ? _decrementValue : null,
                     icon: const Icon(Icons.remove),
                   ),
-                  Text('$_currentValue'),
+                  Text('$_currentValue', style: _numberStyle),
                   IconButton(
                     onPressed: widget.enabled ? _incrementValue : null,
                     icon: const Icon(Icons.add),
@@ -158,6 +149,35 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
         );
       },
     );
+  }
+
+  InputBorder? _getShape(bool hasError) {
+    return Theme.of(context).inputDecorationTheme.border?.copyWith(
+          borderSide: Theme.of(context)
+              .inputDecorationTheme
+              .border
+              ?.borderSide
+              .copyWith(
+                color: widget.enabled
+                    ? hasError
+                        ? Theme.of(context).colorScheme.error
+                        : Theme.of(context).primaryColor
+                    : Theme.of(context).disabledColor,
+              ),
+        );
+  }
+
+  TextStyle? get _numberStyle {
+    final customText = widget.numberStyle;
+    if (customText != null) {
+      return customText.copyWith(
+        color: widget.enabled ? null : Theme.of(context).disabledColor,
+      );
+    } else {
+      return Theme.of(context).textTheme.labelMedium?.copyWith(
+            color: widget.enabled ? null : Theme.of(context).disabledColor,
+          );
+    }
   }
 }
 
