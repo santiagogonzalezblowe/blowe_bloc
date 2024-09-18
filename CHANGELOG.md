@@ -1,3 +1,20 @@
+## 0.4.3
+
+### Improvements
+
+- **BloweTextFormField**:
+
+  - Added support for the `autofillHints` property, allowing for better integration with autofill services. This makes it easier for users to autofill text fields such as emails, usernames, and passwords.
+
+- **BloweNumberFormListTile**:
+  - Introduced the `numberStyle` property, allowing users to customize the text style of the displayed number. This includes options to change the font, size, and color of the number text.
+  - When the widget is disabled, the number text now properly reflects the disabled state, ensuring that it matches the rest of the component visually.
+
+### Bug Fixes
+
+- **BloweMultiBlocSelector**:
+  - Fixed an issue where the initial state of the widget did not enable correctly. This was due to the lack of an initial value being emitted. The widget now emits the correct state upon initialization, ensuring that the widget's enabled state is accurate from the beginning.
+
 ## 0.4.2
 
 ### New Features
