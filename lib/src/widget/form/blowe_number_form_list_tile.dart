@@ -121,26 +121,12 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
       builder: (state) {
         final hasError = state.hasError;
 
-        final shape = Theme.of(context).inputDecorationTheme.border?.copyWith(
-              borderSide: Theme.of(context)
-                  .inputDecorationTheme
-                  .border
-                  ?.borderSide
-                  .copyWith(
-                    color: widget.enabled
-                        ? hasError
-                            ? Theme.of(context).colorScheme.error
-                            : Theme.of(context).primaryColor
-                        : Theme.of(context).disabledColor,
-                  ),
-            );
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
               title: Text(widget.title(context)),
-              shape: shape,
+              shape: _getShape(hasError),
               enabled: widget.enabled,
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -149,11 +135,7 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
                     onPressed: widget.enabled ? _decrementValue : null,
                     icon: const Icon(Icons.remove),
                   ),
-                  Text(
-                    '$_currentValue',
-                    style: widget.numberStyle ??
-                        Theme.of(context).textTheme.labelMedium,
-                  ),
+                  Text('$_currentValue', style: _numberStyle),
                   IconButton(
                     onPressed: widget.enabled ? _incrementValue : null,
                     icon: const Icon(Icons.add),
@@ -167,6 +149,35 @@ class _BloweNumberFormListTileState extends State<BloweNumberFormListTile> {
         );
       },
     );
+  }
+
+  InputBorder? _getShape(bool hasError) {
+    return Theme.of(context).inputDecorationTheme.border?.copyWith(
+          borderSide: Theme.of(context)
+              .inputDecorationTheme
+              .border
+              ?.borderSide
+              .copyWith(
+                color: widget.enabled
+                    ? hasError
+                        ? Theme.of(context).colorScheme.error
+                        : Theme.of(context).primaryColor
+                    : Theme.of(context).disabledColor,
+              ),
+        );
+  }
+
+  TextStyle? get _numberStyle {
+    final customText = widget.numberStyle;
+    if (customText != null) {
+      return customText.copyWith(
+        color: widget.enabled ? null : Theme.of(context).disabledColor,
+      );
+    } else {
+      return Theme.of(context).textTheme.labelLarge?.copyWith(
+            color: widget.enabled ? null : Theme.of(context).disabledColor,
+          );
+    }
   }
 }
 
