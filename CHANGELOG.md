@@ -1,3 +1,13 @@
+## 0.4.4
+
+### Improvements
+
+- **BlowePaginationListView**:
+  - Refactored internal logic to simplify the creation and management of items in the list.
+  - Introduced a unified `_buildItems` method to generate the complete list of widgets, streamlining the process and improving readability.
+  - Removed the `_GroupHeader` class, integrating group headers directly into the list generation.
+  - Improved performance and code maintainability by reducing complexity in item retrieval and rendering.
+
 ## 0.4.3
 
 ### Improvements
