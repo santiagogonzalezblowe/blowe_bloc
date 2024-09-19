@@ -313,6 +313,8 @@ class __BlowePaginationListViewStateLoaded<
 
   @override
   Widget build(BuildContext context) {
+    final items = _buildItems;
+
     return _BloweRefreshWrapper(
       onRefreshEnabled: widget.onRefreshEnabled,
       onRefresh: () async {
@@ -329,96 +331,47 @@ class __BlowePaginationListViewStateLoaded<
         shrinkWrap: widget.shrinkWrap,
         padding: widget.padding,
         controller: _scrollController,
-        itemCount: _itemCount,
-        itemBuilder: (context, index) {
-          if (index == _itemCount - 1 && widget.isLoadingMore) {
-            return const LinearProgressIndicator(minHeight: 2);
-          }
-
-          final item = widget.groupBy == null
-              ? _getItemAt(index)
-              : _getItemAtWithGroup(index);
-
-          if (item is _GroupHeader) return item.header;
-          if (item is Widget) return item;
-
-          return widget.itemBuilder(context, item as T);
-        },
+        itemCount: items.length,
+        itemBuilder: (context, index) => items[index],
       ),
     );
   }
 
-  int get _itemCount {
-    var itemCount = widget.filteredData.items.length;
+  List<Widget> get _buildItems {
+    final widgets = <Widget>[];
+
+    if (widget.startWidget != null) widgets.add(widget.startWidget!);
 
     if (widget.groupBy != null) {
-      final groupedItems = _groupItems();
-      itemCount = groupedItems.keys.length;
-      groupedItems.forEach((key, value) {
-        itemCount += value.length;
-      });
+      _groupItems.forEach(
+        (key, value) {
+          if (widget.groupHeaderBuilder != null) {
+            widgets.add(widget.groupHeaderBuilder!(context, key, value));
+          }
+
+          widgets.addAll(
+            value.map((item) => widget.itemBuilder(context, item)),
+          );
+        },
+      );
+    } else {
+      widgets.addAll(
+        widget.filteredData.items.map(
+          (item) => widget.itemBuilder(context, item),
+        ),
+      );
     }
 
-    if (widget.isLoadingMore) itemCount++;
-    if (widget.startWidget != null) itemCount++;
-    if (widget.endWidget != null) itemCount++;
+    if (widget.endWidget != null) widgets.add(widget.endWidget!);
 
-    return itemCount;
+    if (widget.isLoadingMore) {
+      widgets.add(const LinearProgressIndicator(minHeight: 2));
+    }
+
+    return widgets;
   }
 
-  dynamic _getItemAt(int index) {
-    if (widget.startWidget != null && index == 0) {
-      return widget.startWidget!;
-    }
-
-    final endWidgetIndex = _itemCount - (widget.isLoadingMore ? 2 : 1);
-    if (widget.endWidget != null && index == endWidgetIndex) {
-      return widget.endWidget!;
-    }
-
-    final currentIndex = widget.startWidget != null ? index - 1 : index;
-    return widget.filteredData.items[currentIndex];
-  }
-
-  dynamic _getItemAtWithGroup(int index) {
-    if (widget.startWidget != null && index == 0) {
-      return widget.startWidget!;
-    }
-
-    final currentIndex = widget.startWidget != null ? index - 1 : index;
-
-    final groupedItems = _groupItems();
-    var totalIndex = 0;
-
-    for (final group in groupedItems.entries) {
-      if (totalIndex == currentIndex) {
-        return _GroupHeader(
-          header: widget.groupHeaderBuilder!(
-            context,
-            group.key,
-            group.value,
-          ),
-        );
-      }
-
-      totalIndex++;
-
-      if (currentIndex < totalIndex + group.value.length) {
-        return group.value[currentIndex - totalIndex];
-      }
-
-      totalIndex += group.value.length;
-    }
-
-    final endWidgetIndex = _itemCount - (widget.isLoadingMore ? 2 : 1);
-    if (widget.endWidget != null && index == endWidgetIndex) {
-      return widget.endWidget!;
-    }
-
-    return null;
-  }
-
-  Map<G, List<T>> _groupItems() {
+  Map<G, List<T>> get _groupItems {
     final groupedItems = <G, List<T>>{};
     for (final item in widget.filteredData.items) {
       final group = widget.groupBy!(item);
@@ -480,12 +433,6 @@ class _EmptyList<B extends BlowePaginationBloc<dynamic, P>, P>
       ),
     );
   }
-}
-
-class _GroupHeader {
-  const _GroupHeader({required this.header});
-
-  final Widget header;
 }
 
 /// A widget that wraps a child with a RefreshIndicator if onRefresh is enabled.
