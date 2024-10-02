@@ -1,3 +1,17 @@
+## 0.4.5
+
+### Improvements
+
+- **BloweDropdownButtonFormField**:
+  - Added a new `selectedItemBuilder` property to allow custom display of a selected item.
+  - This property enables the customization of how the selected item is displayed, providing more flexibility for use cases where the default dropdown appearance doesn't suffice.
+
+### Bug Fixes
+
+- **BloweBoolFormListTile**:
+  - Fixed an issue with `CheckBoxListTile` and `SwitchListTile` validation where the value passed to the validator did not reflect the actual current state.
+  - Now, the validator correctly uses the latest value of the boolean form field, ensuring proper validation for form submissions.
+
 ## 0.4.4
 
 ### Improvements
