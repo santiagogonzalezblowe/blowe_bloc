@@ -175,7 +175,10 @@ class _BloweBoolFormListTileState extends State<BloweBoolFormListTile> {
     return FormField<bool>(
       initialValue: _currentValue,
       enabled: widget.enabled,
-      validator: (value) => widget.validator?.call(context, value ?? false),
+      validator: (value) => widget.validator?.call(
+        context,
+        widget.controller.value,
+      ),
       builder: (state) {
         final hasError = state.hasError;
 
