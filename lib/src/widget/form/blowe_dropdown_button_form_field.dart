@@ -25,7 +25,7 @@ typedef BloweDropdownMenuItemBuilder<T> = DropdownMenuItem<T> Function(
 /// - [item]: The selected item to build the widget for.
 typedef BloweDropdownSelectedItemBuilder<T> = Widget Function(
   BuildContext context,
-  T? item,
+  T item,
 );
 
 /// Typedef for an icon builder function used by BloweDropdownButtonFormField.
