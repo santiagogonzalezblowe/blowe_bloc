@@ -72,6 +72,7 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// - [inputFormatters]: Optional list of input formatters.
   /// - [maxLines]: The maximum number of lines to display (default is 1).
   /// - [autofillHints]: Optional autofill hints for the text field.
+  /// - [textCapitalization]: Optional text capitalization.
   const BloweTextFormField({
     required this.labelText,
     this.hintText,
@@ -91,6 +92,7 @@ abstract class BloweTextFormField extends StatefulWidget {
     this.inputFormatters,
     this.maxLines = 1,
     this.autofillHints,
+    this.textCapitalization = TextCapitalization.none,
   });
 
   /// Indicates if the text should be obscured.
@@ -156,6 +158,12 @@ abstract class BloweTextFormField extends StatefulWidget {
   /// If null, no autofill hints will be provided.
   final Iterable<String>? autofillHints;
 
+  /// This property allows you to specify how the text should be capitalized
+  /// when the user is typing. This can be useful for fields like
+  /// names or addresses where you might want to capitalize the first letter
+  /// of each word.
+  final TextCapitalization textCapitalization;
+
   @override
   State<BloweTextFormField> createState() => _BloweTextFormFieldState();
 }
@@ -195,6 +203,7 @@ class _BloweTextFormFieldState extends State<BloweTextFormField> {
       inputFormatters: widget.inputFormatters,
       maxLines: widget.maxLines,
       autofillHints: widget.autofillHints,
+      textCapitalization: widget.textCapitalization,
     );
   }
 

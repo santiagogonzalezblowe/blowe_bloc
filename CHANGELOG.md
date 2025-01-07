@@ -1,3 +1,17 @@
+## 0.4.6
+
+### Improvements
+
+- **BloweTextFormField**:
+  - Added a new `textCapitalization` property to `BloweTextFormField`, allowing control over how text input is capitalized (e.g., sentences, words, or all characters).
+  - This enhancement provides greater flexibility when handling user text input, aligning with common form requirements.
+
+### Flutter Update
+
+- **Flutter Version**:
+  - Updated the Flutter SDK dependency from **3.24.0** to **3.27.0**.
+  - This update ensures compatibility with the latest Flutter features, performance improvements, and bug fixes introduced in version 3.27.0.
+
 ## 0.4.5
 
 ### Improvements
