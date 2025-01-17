@@ -1,3 +1,21 @@
+## 0.4.7
+
+### Improvements
+
+- **BlowePaginationListView**:
+  - Added a new `threshold` property to give users control over when the next page should start loading.
+  - This property allows specifying the scroll offset (in pixels) before the end of the list to trigger the loading of the next page, providing greater flexibility for pagination behavior.
+
+### Bug Fixes
+
+- **Documentation**:
+  - Resolved a warning from `pub.dev` related to the use of angle brackets (`< >`) in comments.
+
+### Dependency Update
+
+- **Flutter Bloc**:
+  - Upgraded the `flutter_bloc` dependency to **9.0.0** to maintain compatibility with the latest updates in the Flutter ecosystem and ensure continued support for new features and improvements.
+
 ## 0.4.6
 
 ### Improvements

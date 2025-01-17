@@ -62,6 +62,10 @@ class BlowePaginationListView<
   /// widget.
   /// - [onRefreshEnabled]: Indicates if the refresh functionality is enabled.
   /// - [bloc]: The bloc to use for the list view.
+  /// - [shrinkWrap]: Indicates if the list view should shrink-wrap its
+  /// contents.
+  /// - [loadThreshold]: Threshold (in pixels) to determine when to load the
+  /// next page. Defaults to 100 pixels from the end of the scroll.
   const BlowePaginationListView({
     required this.itemBuilder,
     required this.paramsProvider,
@@ -76,6 +80,7 @@ class BlowePaginationListView<
     this.onRefreshEnabled = true,
     this.bloc,
     this.shrinkWrap = false,
+    this.loadThreshold = 100,
     super.key,
   }) : assert(
           groupBy == null || groupHeaderBuilder != null,
@@ -120,6 +125,10 @@ class BlowePaginationListView<
 
   /// Indicates if the list view should shrink-wrap its contents.
   final bool shrinkWrap;
+
+  /// Threshold (in pixels) to determine when to load the next page.
+  /// Defaults to 100 pixels from the end of the scroll.
+  final double loadThreshold;
 
   @override
   Widget build(BuildContext context) {
@@ -184,6 +193,7 @@ class BlowePaginationListView<
             groupHeaderBuilder: groupHeaderBuilder,
             onRefreshEnabled: onRefreshEnabled,
             bloc: bloc,
+            loadThreshold: loadThreshold,
           );
         }
 
@@ -223,6 +233,7 @@ class _BlowePaginationListViewLoaded<
     this.onRefreshEnabled = true,
     this.bloc,
     this.shrinkWrap = false,
+    this.loadThreshold = 100,
   });
 
   /// The data for the list view.
@@ -264,6 +275,10 @@ class _BlowePaginationListViewLoaded<
   /// Indicates if the list view should shrink-wrap its contents.
   final bool shrinkWrap;
 
+  /// Threshold (in pixels) to determine when to load the next page.
+  /// Defaults to 100 pixels from the end of the scroll.
+  final double loadThreshold;
+
   @override
   State<_BlowePaginationListViewLoaded<B, T, P, G>> createState() =>
       __BlowePaginationListViewStateLoaded<B, T, P, G>();
@@ -293,7 +308,7 @@ class __BlowePaginationListViewStateLoaded<
           }
 
           if (scrollDirection == ScrollDirection.reverse) {
-            if (currentOffset >= maxScrollExtent - 200) {
+            if (currentOffset >= maxScrollExtent - widget.loadThreshold) {
               if (widget.bloc != null) {
                 widget.bloc!.fetchMore(widget.paramsProvider());
               } else {

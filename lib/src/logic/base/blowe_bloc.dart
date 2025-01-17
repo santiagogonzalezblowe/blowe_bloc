@@ -9,7 +9,7 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
   /// Creates an instance of BloweBloc.
   ///
   /// If [initialData] is provided, the initial state will be
-  /// BloweCompleted<T>(initialData). Otherwise, the initial state will be
+  /// BloweCompleted(initialData). Otherwise, the initial state will be
   /// BloweInitial().
   ///
   /// - [initialData]: Optional initial data to set the state to BloweCompleted.
