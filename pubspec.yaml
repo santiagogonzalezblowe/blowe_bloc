@@ -1,6 +1,6 @@
 name: blowe_bloc
 description: "An advanced Flutter package for state management and business logic components, extending flutter_bloc."
-version: 0.4.6
+version: 0.4.7
 repository: https://github.com/santiagogonzalezblowe/blowe_bloc
 issue_tracker: https://github.com/santiagogonzalezblowe/blowe_bloc/issues
 homepage: https://www.linkedin.com/in/santiagogonzalezblowe/
@@ -13,7 +13,7 @@ dependencies:
   equatable: ^2.0.5
   flutter:
     sdk: flutter
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.0.0
   shared_preferences: ^2.3.5
 
 dev_dependencies:
