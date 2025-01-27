@@ -28,7 +28,7 @@ class BloweBlocButton<B extends BloweBloc<T, dynamic>,
   }
 
   /// Creates the button widget based on the type of ButtonStyleButton
-  /// (ElevatedButton, TextButton, OutlinedButton).
+  /// (ElevatedButton, TextButton, OutlinedButton, FilledButton).
   ///
   /// - [context]: The BuildContext of the widget.
   /// - [enabled]: Indicates if the button should be enabled.
@@ -46,6 +46,11 @@ class BloweBlocButton<B extends BloweBloc<T, dynamic>,
         );
       case const (OutlinedButton):
         return OutlinedButton(
+          onPressed: enabled ? onPressed : null,
+          child: Text(text),
+        );
+      case const (FilledButton):
+        return FilledButton(
           onPressed: enabled ? onPressed : null,
           child: Text(text),
         );
