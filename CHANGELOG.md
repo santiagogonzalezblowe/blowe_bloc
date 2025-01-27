@@ -1,3 +1,12 @@
+## 0.4.8
+
+### Improvements
+
+- **BloweBlocButton**:
+  - Added support for the new `FilledButton` widget.
+  - Now, you can use `FilledButton` in `BloweBlocButton` just like `ElevatedButton`, `TextButton`, and `OutlinedButton`.
+  - This addition aligns `BloweBlocButton` with the latest Material Design components and provides more styling options for your buttons.
+
 ## 0.4.7
 
 ### Improvements
