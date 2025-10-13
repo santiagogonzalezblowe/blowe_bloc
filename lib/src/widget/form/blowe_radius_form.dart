@@ -129,24 +129,25 @@ class BloweRadiusForm<T> extends StatelessWidget {
           children: [
             Material(
               shape: shape,
-              child: Column(
-                children: items
-                    .map(
-                      (item) => RadioListTile<T>(
-                        title: Text(titleBuilder(context, item)),
-                        groupValue: value,
-                        value: item,
-                        toggleable: toggleable,
-                        onChanged: enabled
-                            ? (newValue) {
-                                didChange(newValue);
-                                controller.value = newValue;
-                              }
-                            : null,
-                        controlAffinity: controlAffinity,
-                      ),
-                    )
-                    .toList(),
+              child: RadioGroup<T>(
+                onChanged: (newValue) {
+                  didChange(newValue);
+                  controller.value = newValue;
+                },
+                groupValue: value,
+                child: Column(
+                  children: items
+                      .map(
+                        (item) => RadioListTile<T>(
+                          title: Text(titleBuilder(context, item)),
+                          value: item,
+                          toggleable: toggleable,
+                          enabled: enabled,
+                          controlAffinity: controlAffinity,
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
             ),
             if (hasError && enabled) BloweFormErrorText(state.errorText ?? ''),

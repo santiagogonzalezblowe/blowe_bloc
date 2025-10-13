@@ -1,3 +1,34 @@
+## 0.5.0
+
+### Bug Fixes
+
+- **Homepage URL**: Fixed the homepage URL to use the GitHub repository instead of LinkedIn profile, ensuring it's accessible via HEAD requests.
+
+- **Deprecated Properties**:
+
+  - Fixed usage of deprecated `value` property in `BloweDropdownButtonFormField`, now using `initialValue` instead.
+  - Fixed usage of deprecated `groupValue` property in `BloweRadiusForm`, now using `RadioGroup` ancestor to manage group value.
+
+- **Analysis Options**: Removed deprecated linter rules (`package_api_docs` and `unsafe_html`) that were removed in Dart 3.7.0.
+
+### New Features
+
+- **BloweBloc**:
+  - Added `forceError(Exception error)` method to allow forcefully emitting error states without going through fetch or load operations. This is useful for testing and handling specific error scenarios.
+  - Added `BloweForceError` event to support the new `forceError` method.
+
+### Improvements
+
+- **BloweRadiusForm**:
+  - Refactored to use the new `RadioGroup` widget for better state management.
+  - Radio buttons now properly sync with the FormField state through `RadioGroup`'s `groupValue`.
+
+### Dependency Updates
+
+- **equatable**: Updated from `^2.0.5` to `^2.0.7`.
+- **flutter_bloc**: Updated from `^9.0.0` to `^9.1.1`.
+- **shared_preferences**: Updated from `^2.3.5` to `^2.5.3`.
+
 ## 0.4.8
 
 ### Improvements
