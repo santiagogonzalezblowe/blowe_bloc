@@ -54,3 +54,17 @@ class BloweUpdateData<T> extends BloweEvent {
 
 /// Event used to reset the Bloc to its initial state.
 class BloweReset extends BloweEvent {}
+
+/// Event used to force an error state directly.
+class BloweForceError extends BloweEvent {
+  /// Creates an instance of BloweForceError with the given error.
+  ///
+  /// - [error]: The exception to force in the error state.
+  const BloweForceError(this.error);
+
+  /// The exception to force in the error state.
+  final Exception error;
+
+  @override
+  List<Object?> get props => [error];
+}

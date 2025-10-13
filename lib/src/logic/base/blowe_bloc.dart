@@ -23,6 +23,7 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
     on<BloweUpdateData<T>>(_onUpdateData);
     on<BloweReset>(onReset);
     on<BloweFetchMore<P>>(_onFetchMore);
+    on<BloweForceError>(_onForceError);
   }
 
   /// Abstract method that must be implemented by derived classes to handle
@@ -75,6 +76,12 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
   ) =>
       emit(BloweCompleted<T>(event.data, history: state.history));
 
+  void _onForceError(
+    BloweForceError event,
+    Emitter<BloweState<T>> emit,
+  ) =>
+      emit(BloweError<T>(event.error, history: state.history));
+
   /// Emits the BloweInitial state to reset the Bloc to its initial state.
   /// This method is invoked when BloweReset is called.
   ///
@@ -107,4 +114,12 @@ abstract class BloweBloc<T, P> extends Bloc<BloweEvent, BloweState<T>> {
 
   /// Emits a [BloweReset] event to reset the bloc's state.
   void reset() => add(BloweReset());
+
+  /// Emits a [BloweError] state directly without going through fetch or load.
+  ///
+  /// This method allows you to forcefully force an error state when needed,
+  /// useful for testing or handling specific error scenarios.
+  ///
+  /// - [error]: The exception to force in the error state.
+  void forceError(Exception error) => add(BloweForceError(error));
 }

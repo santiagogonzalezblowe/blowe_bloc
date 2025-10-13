@@ -66,7 +66,7 @@ abstract class BloweDropdownButtonFormField<T> extends StatelessWidget {
   /// - [suffixIcon]: Optional builder function to create the suffix icon.
   /// - [validator]: Optional validator function.
   /// - [enabled]: Indicates if the dropdown is enabled (default is true).
-  /// - [value]: The currently selected value.
+  /// - [initialValue]: The initial value of the dropdown.
   const BloweDropdownButtonFormField({
     required this.items,
     required this.onChanged,
@@ -77,7 +77,7 @@ abstract class BloweDropdownButtonFormField<T> extends StatelessWidget {
     this.suffixIcon,
     this.validator,
     this.enabled = true,
-    this.value,
+    this.initialValue,
     super.key,
   });
 
@@ -109,8 +109,8 @@ abstract class BloweDropdownButtonFormField<T> extends StatelessWidget {
   /// Indicates if the dropdown is enabled.
   final bool enabled;
 
-  /// The currently selected value.
-  final T? value;
+  /// The initial value of the dropdown.
+  final T? initialValue;
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +128,7 @@ abstract class BloweDropdownButtonFormField<T> extends StatelessWidget {
         suffixIcon: suffixIcon?.call(context),
       ),
       icon: icon?.call(context),
-      value: value,
+      initialValue: initialValue,
       isExpanded: true,
     );
   }
